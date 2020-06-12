@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+{% block content %}
+    <h1>Detail</h1>
+    <p>{{ movie.title }}</p>
+    <a href="{% url 'posts:post_create' movie.id %}">글쓰기</a>
+    <hr>
+    <form action="{% url 'movies:rating_create' movie.id %}" method="POST">
+        {% csrf_token %}
+        {% bootstrap_form form %}
+        <button class="btn btn-secondary">SAVE</button>
+    </form>
+    <hr>
+    {% for rating in ratings %}
+        <p>{{ rating.content }} - {{ rating.user }} - {{ rating.rank }} - {{ rating.standard }}</p>
+    {% endfor %}
+{% endblock %}

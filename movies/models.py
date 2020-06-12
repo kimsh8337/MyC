@@ -23,8 +23,10 @@ class Movie(models.Model):
     genre_ids = models.ManyToManyField(Genre, related_name='movie_genres')
     selected_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='selcted_movies')
     watched_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='watched_movies')
-    
 
+    def __str__(self):
+        return self.title
+    
 class Rating(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)

@@ -1,8 +1,13 @@
 {% extends 'base.html' %}
 {% load bootstrap4 %}
+{% block title %}Main{% endblock %}
+
 {% block content %}
     <h1>Index</h1>
     {% for movie in movies %}
-    <p>{{ movie.title }}</p>
+        <a href="{% url 'movies:movie_detail' movie.pk %}">{{ movie.title }}</a>
+        <a href=""><i class="far fa-bookmark"></i></a>
+        <a href=""><i class="far fa-eye"></i></a>
+        <br>
     {% endfor %}
 {% endblock %}
