@@ -2,28 +2,12 @@
 {% load bootstrap4 %}
 {% block content %}
 <h2 class="m-5 text-center">Posting</h2>
-<table class="table table-hover mx-auto ">
-  <thead>
-    <tr>
-      <th scope="col" class="text-center">#</th>
-      <th scope="col" class="text-center">Title</th>
-      <th scope="col" class="text-center">Movie Title</th>
-      <th scope="col" class="text-center">Movie Poster</th>
-      <th scope="col" class="text-center">Created_At</th>
-      <th scope="col" class="text-center">Updated_At</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for post in posts %}
-    <tr>
-      <th scope="row">{{ post.pk }}</th>
-      <td class="text-center"><a class="text-dark text-center" href="{% url 'post:post_detail' post.pk %}">{{ post.title }}</a></td>
-      <td class="text-center"><a class="text-dark text-center" href="{% url 'post:post_detail' post.pk %}">{{ post.movie_title }}</a></td>
-      <td class="text-center"><a class="text-dark text-center" href="{{ post.poster_url }}">poster preview</a></td>
-      <td class="text-center">{{ post.created_at }}</td>
-      <td class="text-center">{{ post.updated_at }}</td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+  {% for post in posts %}
+    <a href="{% url 'posts:post_detail' post.pk %}">{{ post.title }}</a>
+    <p>{{ post.pk }}</p>
+    <p>{{ post.movie.title }}</p>
+    <p>{{ post.created_at }}</p>
+    <p>{{ post.updated_at }}</p>
+    <p>{{ post.score }}</p>
+  {% endfor %}
 {% endblock %}

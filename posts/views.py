@@ -41,3 +41,59 @@ def post_detail(request, post_pk):
         'form' : form,
     }
     return render(request, 'posts/post_detail.html', context)
+
+@login_required
+def post_update(request, post_pk):
+    post = get_object_or_404(Post, pk=post_pk)
+    if request.user == post.user:
+        if request.method =='POST':
+            form = PostForm(request.POST, instance=post)
+            if form.is_valid():
+                post = form.save(commit=False)
+                post.user = request.user
+                post.save()
+                return redirect('posts:post_detail', post.pk)
+        else:
+            form = PostForm(instance=post)
+        context = {
+            'form':form
+        }
+        return render(request, 'posts/form.html', context)
+    else:
+        return redirect('posts:post_list')
+
+@login_required
+def post_delete(request,post_pk):
+    post = get_object_or_404(Post, pk=post_pk)
+    if request.user == post.user:
+        post.delete()
+    return redirect('posts:post_list')
+
+@login_required
+def comments(request, post_pk):
+    post = get_object_or_404(Post, pk=post_pk)
+    form = CommentForm(request.POST)
+    if form.is_valid():
+        comment = form.save(commit=False)
+        comment.user = request.user
+        comment.post = post
+        comment.save()
+    return redirect('posts:post_detail', post.pk)
+
+@require_POST
+@login_required
+def comments_delete(request, post_pk, comment_pk):
+    comment = Comment.objects.get(pk=comment_pk)
+    if comment.user == request.user:
+        comment.delete()
+    return redirect('posts:post_detail', post_pk)
+
+@login_required
+def like(request, post_pk):
+    post = get_object_or_404(Post, pk=post_pk)
+    user = request.user
+    if post.like_users.filter(id=user.id).exists():
+        post.like_users.remove(user)
+    else:
+        post.like_users.add(user)
+    return redirect('posts:post_detail', post_pk)
