@@ -1,0 +1,10 @@
+<div>
+    <a href="{% url 'posts:like' post.pk %}" style='text-decoration:none;'>
+        {% if user in post.like_users.all %}
+        <i class="fas fa-heart"></i>  <!--꽉 찬 하트-->
+        {% else %}
+        <i class="far fa-heart"></i>  <!--빈 하트-->
+        {% endif %}
+    </a>
+    <span>{{ post.like_users.all.count }}</span>
+</div>

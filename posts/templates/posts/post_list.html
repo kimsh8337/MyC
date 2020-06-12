@@ -3,7 +3,7 @@
 {% block content %}
 <h2 class="m-5 text-center">Posting</h2>
   {% for post in posts %}
-    <p>{{ post.title }}</p>
+    <a href="{% url 'posts:post_detail' post.pk %}">{{ post.title }}</a>
     <p>{{ post.pk }}</p>
     <p>{{ post.movie.title }}</p>
     <p>{{ post.created_at }}</p>
