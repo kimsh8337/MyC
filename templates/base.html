@@ -15,6 +15,11 @@
     {% bootstrap_css %}
 </head>
 <body>
+    <!-- Navigation -->
+    {% include '_nav.html' %}
+    <!-- Message framework -->
+    {% include '_message.html' %}
+    
     <div class="container">
         {% block content %}
 	    {% endblock %}

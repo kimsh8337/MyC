@@ -1,0 +1,27 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm p-3 bg-white rounded">
+    <a class="navbar-brand js-scroll-trigger font-weight-bold mx-5" href="{% url 'movies:index' %}"><h4 class='logo'>M</h4></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ml-auto">
+          {% if request.user.is_authenticated %}
+            <li class="nav-item">
+                <a class="nav-link text-secondary" href="{% url 'accounts:profile' request.user.id %}">Welcome! {{ request.user.username }} :)</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'accounts:logout' %}">Logout</a>
+            </li>
+          {% else %}
+              <li class="nav-item">
+              <!-- <a class="nav-link" href="{% url 'accounts:login' %}">Log In</a> -->
+                <a class="nav-link" href="#" data-toggle="modal" data-target="#exampleModal">Log In</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'accounts:signup' %}">Sign Up</a>
+              </li>
+          {% endif %}
+      </ul>
+    </div>
+  </nav>
+  {% include 'accounts/_loginModal.html' %}

@@ -1,6 +1,20 @@
 {% extends 'base.html' %}
 {% load bootstrap4 %}
 {% block content %}
-
-
+<div class="mt-5 d-flex justify-content-center">
+    <div class="card" style="width: 50rem;">
+        <h3 class="card-header bg-white"><i class="fas fa-user-plus"></i> Sign Up</h3>
+        <div class="card-body">
+            <form action="" method="POST" col="5">
+                {% csrf_token %}
+                {% bootstrap_form form %}
+                <input class="btn btn-dark" type="submit" value='Sign Up'>
+                <span class="ml-3 mr-1">Already have an account?</span>
+                <a href="#" data-toggle="modal" data-target="#exampleModal">Log In</a>
+                <!-- <a href="{% url 'accounts:login' %}">Log in</a> -->
+            </form>
+        </div>
+    </div>
+</div>
+{% include 'accounts/_loginModal.html' %}
 {% endblock %}

@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
 
     # bootstrap
     'bootstrap4',
@@ -46,6 +47,15 @@ INSTALLED_APPS = [
     'movies',
     'posts',
 
+    # all auth
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+
+    # google
+    'allauth.socialaccount.providers.google',
+    # naver
+    'allauth.socialaccount.providers.naver',
 ]
 
 MIDDLEWARE = [
@@ -128,5 +138,12 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+]
 
 AUTH_USER_MODEL = 'accounts.User'
+
+# Message Framework
+MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
+
