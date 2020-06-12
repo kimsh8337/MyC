@@ -21,7 +21,6 @@ class Movie(models.Model):
     backdrop_path = models.TextField(null=True)
 
     genre_ids = models.ManyToManyField(Genre, related_name='movie_genres')
-
     selected_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='selcted_movies')
     watched_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='watched_movies')
     
