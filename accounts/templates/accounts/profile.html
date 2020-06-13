@@ -1,6 +1,65 @@
 {% extends 'base.html' %}
 {% load bootstrap4 %}
+{% load gravatar %}
 {% block content %}
+<div class="d-flex justify-content-center">
+    <div class="mx-5" style="width: 45rem;">
+        <img class="avatar float-right" src="{{ user.email|profile_url }}?s=120">
+        <h2 class="mr-3 font-weight-bold">{{ user.username }}</h2>
+        <p class='text-secondary'>Review member since {{ user.date_joined|date:"Y M"}}</p>
+        <p><i class="fas fa-at"></i> {{ user.email }}</p>
+        {% with user_followers=user.followers.all %}
+            <p>{{ user.followings.count }}  Following {{ user_followers|length }} Followers</p>
+            {% if request.user != user %}
+                {% if request.user in user_followers %}
+                    <a href="{% url 'accounts:follow' user.pk %}" type="button" class="btn btn-success">following</a>
+                {% else %}
+                    <a href="{% url 'accounts:follow' user.pk %}" type="button" class="btn btn-outline-success">follow</a>
+                {% endif %}
+            {% endif %}
+        {% endwith %}
+    </div>
+    </div>
+    <hr>
+    <div class="d-flex justify-content-center flex-column">
+        <div class="flex-column">
+        <h5 class="mb-3">My Post</h5>
+        {% for post in user.post_set.all %}
+            <div class="card mb-4 post-a" style="width: 45rem;">
+                <div class="card-body">
+                    <img class="avatar" src="{{ user.email|profile_url }}?s=50">
+                <span class="card-title ml-2">{{ user.username }}</span>
+                <a href="{% url 'posts:post_detail' post.id %}"><h3 class="card-title mt-3">{{ post.title }}</h3></a>
+                <p class="card-text text-muted">{{ post.content|slice:":50" }}</p>
+                <div class="row justify-content-between">
+                            <div class="col-4">
+                            {{ post.like_users.count }} like · {{ post.comment_set.count }} comments
+                            </div>
+                            <span class="col-4 text-right">
+                            {{ post.created_at|date:"Y-m-d H:i" }}
+                            </span>
+                        </div>
+                </div>
+            </div>
+        {% empty %}
+            <p class="text-secondary">아직 작성한 글이 없습니다! 첫 글을 작성해 보세요 :)</p>
+        {% endfor %}
+        </div>
 
+        <div class="flex-column">
+            <h5 class="mb-3">My Selected</h5> 
+            {% for select in user.movie_set.all %}
+                <div class="card mb-4 select-a" style="width: 45rem;">
+                    <div class="card-body">
+                        <img class="avatar" src="{{ user.email|profile_url }}?s=50">
+                    <span class="card-title ml-2">{{ user.username }}</span>
+                    <a href="{% url 'movies:movie_detail' select.id %}"><h3 class="card-title mt-3">{{ select.movietitle }}</h3></a>
+                    </div>
+                </div>
+            {% empty %}
+                <p class="text-secondary">아직 찜한 영화가 없습니다 :)</p>
+            {% endfor %}
+        </div>
+</div>
 
 {% endblock %}

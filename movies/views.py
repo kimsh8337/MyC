@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 
 from .models import Movie, Rating
 from .forms import RatingForm
@@ -45,8 +46,9 @@ def rating_update(request, movie_pk, rating_pk):
     movie = get_object_or_404(Movie, pk=movie_pk)
 
     if request.user != rating.user:
-        messages.warning(request, '작성자가 아니면 수정할 수 없습니다.')
+        messages.warning(request, '권한없음.')
         return redirect('movies:movie_detail', movie_pk)
+    
     if request.method =='POST':
         form = RatingForm(request.POST, instance=rating)
         if form.is_valid():
@@ -64,7 +66,6 @@ def rating_update(request, movie_pk, rating_pk):
     }
     return render(request, 'movies/movie_detail.html', context)
 
-
 @login_required
 @require_POST
 def rating_delete(request, movie_pk, rating_pk):
@@ -72,3 +73,20 @@ def rating_delete(request, movie_pk, rating_pk):
     if request.user == rating.user:
         rating.delete()
     return redirect('movies:movie_detail', movie_pk)
+
+def movie_select(request, movie_pk):
+    movie = get_object_or_404(Movie, pk=movie_pk)
+    if movie.selected_users.filter(id=request.user.pk).exists():
+        movie.selected_users.remove(request.user)
+        selected = False
+    else:
+        movie.selected_users.add(request.user)
+        selected = True
+    context = {
+        'selected': selected,
+        'count': movie.selected_users.count()
+    }
+    return JsonResponse(context)
+
+def movie_watch(request, movie_pk):
+    pass

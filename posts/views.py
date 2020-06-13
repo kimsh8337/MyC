@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 
 from movies.models import Movie
 from .models import Post, Comment
@@ -88,12 +89,18 @@ def comments_delete(request, post_pk, comment_pk):
         comment.delete()
     return redirect('posts:post_detail', post_pk)
 
+
 @login_required
 def like(request, post_pk):
     post = get_object_or_404(Post, pk=post_pk)
-    user = request.user
-    if post.like_users.filter(id=user.id).exists():
-        post.like_users.remove(user)
+    if post.like_users.filter(id=request.user.pk).exists():
+        post.like_users.remove(request.user)
+        liked = False
     else:
-        post.like_users.add(user)
-    return redirect('posts:post_detail', post_pk)
+        post.like_users.add(request.user)
+        liked = True
+    context = {
+        'liked': liked,
+        'count': post.like_users.count(),
+    }
+    return JsonResponse(context)

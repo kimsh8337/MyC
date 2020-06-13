@@ -51,7 +51,12 @@ def logout(request):
     return redirect('movies:index')
 
 def profile(request, user_id):
-    return render(request, 'accounts/profile.html')
+    User = get_user_model()
+    user = get_object_or_404(User, pk=user_id)
+    context = {
+        'user':user
+    }
+    return render(request, 'accounts/profile.html', context)
 
 def follow(request, user_id):
     if not request.user.is_authenticated:

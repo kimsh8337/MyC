@@ -13,5 +13,15 @@
     <hr>
     {% for rating in ratings %}
         <p>{{ rating.content }} - {{ rating.user }} - {{ rating.rank }} - {{ rating.standard }}</p>
+        {% if request.user == rating.user %}
+                <form class='d-inline' action="{% url 'movies:rating_delete' movie.id rating.id %}" method="POST">
+                    {% csrf_token %}
+                    <button class="btn btn-dark"><i class="far fa-trash-alt"></i></button>
+                </form>
+                <form class='d-inline' action="{% url 'movies:rating_update' movie.id rating.id %}" method="POST">
+                    {% csrf_token %}
+                    <button class="btn btn-dark"><i class="fas fa-edit"></i></button>
+                </form>
+        {% endif %}
     {% endfor %}
 {% endblock %}

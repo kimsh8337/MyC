@@ -6,8 +6,35 @@
     <h1>Index</h1>
     {% for movie in movies %}
         <a href="{% url 'movies:movie_detail' movie.pk %}">{{ movie.title }}</a>
-        <a href=""><i class="far fa-bookmark"></i></a>
         <a href=""><i class="far fa-eye"></i></a>
+        {% if request.user in movie.selected_users.all %}
+            <i class="far fa-bookmark select-button" style="color:crimson" data-movie-pk="{{ movie.pk }}"></i>
+        {% else %}
+            <i class="far fa-bookmark select-button" style="color:black" data-movie-pk="{{ movie.pk }}"></i>
+        {% endif %}
+        <span id="select-count-{{ movie.pk }}" class="mr-4">{{ movie.selected_users.all.count }}</span>
         <br>
     {% endfor %}
+
+    <!-- select, watch -->
+    <script>
+        const selectButtons = document.querySelectorAll('.select-button');
+        selectButtons.forEach(function(selectButton){
+            selectButton.addEventListener('click', function(event){
+            const moviePk = event.target.dataset.moviePk
+            const countInfo = document.querySelector(`#select-count-${moviePk}`)
+            axios.get(`/movies/${moviePk}/selected`)
+                .then(function(response){
+                const count = response.data.count
+                const selected = response.data.selected
+                if (selected){
+                    event.target.style.color = "crimson"
+                }else{
+                    event.target.style.color = "black"
+                }
+                countInfo.innerText = `${count}`
+                });
+            });
+        });
+    </script>
 {% endblock %}
