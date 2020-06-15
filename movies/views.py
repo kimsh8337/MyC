@@ -11,14 +11,15 @@ from .forms import RatingForm
 # movies = Movie.objects.all()
 # Create your views here.
 def index(request):
-    movies = Movie.objects.all()
-    paginator = Paginator(movies, 10)
+    movies = Movie.objects.order_by('-popularity')
+    # paginator = Paginator(movies, 10)
 
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
+    # page_number = request.GET.get('page')
+    # page_obj = paginator.get_page(page_number)
 
     context = {
-        'page_obj': page_obj,
+        'movie_top': movies[0],
+        'movies_top3': movies[1:4],
     }
     return render(request, 'movies/index.html', context)
 

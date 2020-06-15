@@ -36,23 +36,29 @@
             </li>
           {% else %}
               <li class="nav-item">
-                <a class="nav-link text-white" href="#" data-toggle="modal" data-target="#exampleModal">Log In</a>
+                <a class="nav-link text-white" href="#" data-toggle="modal" data-target="#loginModal">Log In</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link text-white" href="{% url 'accounts:signup' %}">Get Started</a>
+                <a class="nav-link text-white" href="#" data-toggle="modal" data-target="#signupModal">Get Started</a>
               </li>
           {% endif %}
       </ul>
     </div>
   </nav>
   {% include 'accounts/_loginModal.html' %}
+  {% include 'accounts/_signupModal.html' %}
 <script>
     const urlCheck = document.querySelector('.url-check').id
     const navBar = document.querySelector('.movie-nav')
     if (urlCheck === 'genre'){
       navBar.style.backgroundColor = 'rgb(31, 31, 31)'
-    } else {
+      navBar.style.display = ''
+    } else if (urlCheck ==='login' | urlCheck ==='signup') {
+      navBar.style.display = 'none'
+    }
+    else {
       navBar.style.backgroundColor = ''
+      navBar.style.display = ''
     }
     console.log(urlCheck)
 </script>

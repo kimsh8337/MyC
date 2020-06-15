@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.views.decorators.http import require_POST
 
-from .forms import CustomUserCreationForm
+from .forms import CustomUserCreationForm, CustomAuthenticationForm
 
 # Create your views here.
 def login(request):
@@ -15,13 +15,13 @@ def login(request):
         messages.warning(request, '이미 로그인이 되어있음.')
         return redirect('movies:index')
     if request.method == 'POST':
-        form = AuthenticationForm(request, request.POST)
+        form = CustomAuthenticationForm(request, request.POST)
         if form.is_valid():
             auth_login(request, form.get_user())
             messages.success(request, f'{request.user.username}님 환영!')
             return redirect(request.GET.get('next') or 'movies:index')
     else:
-        form = AuthenticationForm()
+        form = CustomAuthenticationForm()
     context = {
         'form': form
     }
