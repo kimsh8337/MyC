@@ -9,21 +9,26 @@
 
 {% block content %}
   <div id="carouselExampleCaptions" class="carousel slide" data-ride="carousel">
-    <ol class="carousel-indicators">
+    <!-- <ol class="carousel-indicators">
       <li data-target="#carouselExampleCaptions" data-slide-to="0" class="active"></li>
       <li data-target="#carouselExampleCaptions" data-slide-to="1"></li>
       <li data-target="#carouselExampleCaptions" data-slide-to="2"></li>
       <li data-target="#carouselExampleCaptions" data-slide-to="3"></li>
-    </ol>
+    </ol> -->
     <div class="carousel-inner">
       <div class="carousel-item active">
-        <img src="https://image.tmdb.org/t/p/original/{{ movie_top.backdrop_path }}" class="d-block w-100" alt="...">
+        <div>
+          <img src="https://image.tmdb.org/t/p/original/{{ movie_top.backdrop_path }}" class="d-block w-100" alt="...">
+        </div>
       </div>
       {% for movie_c in movies_top3 %}
         <div class="carousel-item">
-          <img src="https://image.tmdb.org/t/p/original/{{ movie_c.backdrop_path }}" class="d-block w-100" alt="...">
+          <div>
+            <div class="tag">{{ movie_c.title}}</div>
+            <img src="https://image.tmdb.org/t/p/original/{{ movie_c.backdrop_path }}" class="d-block w-100" alt="...">
+          </div>
         </div>
-      {% endfor %}  
+      {% endfor %}
 
     <a class="carousel-control-prev" href="#carouselExampleCaptions" role="button" data-slide="prev">
       <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
@@ -36,6 +41,13 @@
   </div> 
   <div class="container p-5">
     <h1>Hello</h1>
+    <h5>Saved</h5>
+    {% for saved_movie in saved %}
+      <p>{{ saved_movie.title }}</p>
+    {% empty %}
+    <p>아직 저장한 영화가 없거나 모든 영화를 다 보았습니다!</p>
+    {% endfor %}
+
     <p></p>
     <p>{{ movies_top3 }}</p>
   </div>  

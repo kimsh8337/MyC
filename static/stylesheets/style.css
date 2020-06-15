@@ -2,23 +2,36 @@ body {
     background-color:rgb(31, 31, 31) !important;
     color: white !important;
     margin-top: 0 !important;
+    /* font-family: 'Noto Sans KR', sans-serif !important; */
+    font-family: 'Do Hyeon', sans-serif !important;
 }
 .background-none {
     background-color:rgb(31, 31, 31) !important;
 }
+.container-cover {
+    position: relative;
+    /* text-align: center; */
+}
+.inner {
+    z-index: 1000;
+    /* float: center; */
+    position: absolute;
+    top: 50%;
+    left: 50%
+    
+}
 .head-cover {
     position:relative;
-    height: 90vh;
+    height: 95vh;
     background-repeat: no-repeat;
     background-size: cover;
     position: relative;
     background-position: center top;
-    /* opacity: 0.4; */
+    opacity: 0.3;
     top: 0 !important;
     display: flex;
     justify-content: center;
     align-items: center;
-
 }
 .movie-nav {
     top:0;
