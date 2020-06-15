@@ -8,22 +8,26 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <!--Font Awesome -->
     <script src="https://kit.fontawesome.com/8d37770efa.js" crossorigin="anonymous"></script>
-
     <!-- static -->
     <link rel="stylesheet" href="{% static 'stylesheets/style.css' %}">
-    <title>MOVIE - {% block title%}{% endblock %}</title>
+    {% block css %}
+    {% endblock %}
+    <!-- Boostrap CSS -->
     {% bootstrap_css %}
-
     <!-- Axios -->
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <!-- Ajax -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+
+    <title>MOVIE - {% block title%}{% endblock %}</title>
 </head>
 <body>
-    <!-- Navigation -->
-    {% include '_nav.html' %}
     <!-- Message framework -->
     {% include '_message.html' %}
+    <!-- Navigation -->
+    {% include '_nav.html' %}
     
-    <div class="container">
+    <div>
         {% block content %}
 	    {% endblock %}
     </div>

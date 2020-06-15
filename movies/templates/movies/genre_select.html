@@ -1,0 +1,37 @@
+<script>
+    
+
+    const selectGenreButtons = document.querySelectorAll('.select-genre');
+    var hideMovie = []
+    var beforeSelected = 0
+    selectGenreButtons.forEach(function(selectGenreButton){
+        selectGenreButton.addEventListener('click', function(event){
+            if (beforeSelected){
+                beforeSelected.style.fontSize = ''
+                beforeSelected.style.color = ''
+            }
+            const genrePk = event.target.dataset.genrePk
+            const selectedGenre = document.querySelector(`#genre-${genrePk}`)
+            selectedGenre.style.fontSize = '20px'
+            selectedGenre.style.color = '#39CCCC'
+            beforeSelected = selectedGenre
+
+            axios.get(`/movies/genre/${genrePk}/`)
+                .then(function(response){
+                    var movieAll = document.querySelectorAll('.movie-all')
+                    movieAll.forEach(function(movie){
+                        movie.style.display = ''
+                    })
+                    const hideMovieCnt = response.data.hide_cnt
+                    hideMovie = response.data.hide_movie
+                    for (let i = 0; i < hideMovieCnt; i++){
+                        const movieId = hideMovie[i]
+                        var movieData = document.querySelector(`#movie-${movieId}`)
+                        movieData.style.display = 'none'
+                    }
+                    scroll(0, 0)
+                })
+                .catch(function(error){console.log(error)});    
+        });
+    });
+</script>

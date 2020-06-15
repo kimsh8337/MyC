@@ -33,6 +33,6 @@ class Rating(models.Model):
 
     content = models.CharField(max_length=500)
     standard = models.IntegerField()
-    rank = models.BooleanField()
+    rank = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

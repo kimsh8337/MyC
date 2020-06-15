@@ -41,6 +41,7 @@ INSTALLED_APPS = [
 
     # bootstrap
     'bootstrap4',
+    'bootstrap_pagination',
 
     # my app
     'accounts',
