@@ -48,12 +48,13 @@
 
         <div class="flex-column">
             <h5 class="mb-3">My Selected</h5> 
-            {% for select in user.movie_set.all %}
-                <div class="card mb-4 select-a" style="width: 45rem;">
+            {% for movie in user.selected_movies.all %}
+                <p>{{movie}}</p>
+                <div class="card mb-4 movie-a" style="width: 45rem;">
                     <div class="card-body">
                         <img class="avatar" src="{{ user.email|profile_url }}?s=50">
                     <span class="card-title ml-2">{{ user.username }}</span>
-                    <a href="{% url 'movies:movie_detail' select.id %}"><h3 class="card-title mt-3">{{ select.movietitle }}</h3></a>
+                    <a href="{% url 'movies:movie_detail' movie.id %}"><h3 class="card-title mt-3">{{ movie.title }}</h3></a>
                     </div>
                 </div>
             {% empty %}

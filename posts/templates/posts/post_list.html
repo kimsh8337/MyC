@@ -1,13 +1,25 @@
 {% extends 'base.html' %}
 {% load bootstrap4 %}
 {% block content %}
-<h2 class="m-5 text-center">Posting</h2>
+<div class="container">
+  <h2 class="m-5 text-center">Posting</h2>
+  <div class="row my-3">
   {% for post in posts %}
-    <a href="{% url 'posts:post_detail' post.pk %}">{{ post.title }}</a>
-    <p>{{ post.pk }}</p>
-    <p>{{ post.movie.title }}</p>
-    <p>{{ post.created_at }}</p>
-    <p>{{ post.updated_at }}</p>
-    <p>{{ post.score }}</p>
-  {% endfor %}
+      <div class="col-7 col-sm-5 col-md-4 col-lg-3">
+          <div class="card m-2 text-center" style="width: 13rem;">
+            <img src="https://image.tmdb.org/t/p/original/{{ post.movie.poster_path }}" class="card-img-top" alt="movie_poster">
+            <div class="card-body">
+              <h5 class="card-title">{{ post.title }}</h5>
+              <p class="card-text">{{ post.content|truncatechars_html:7 }}</p>
+              <a href="{% url 'posts:post_detail' post.pk %}" class="btn btn-primary">상세보기</a>
+            </div>
+          </div>
+      </div>
+
+  {% endfor %}  
+  </div>
+    
+  
+</div>
+
 {% endblock %}

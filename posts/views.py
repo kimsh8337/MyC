@@ -11,7 +11,7 @@ from .forms import PostForm, CommentForm
 def post_list(request):
     posts = Post.objects.order_by('-pk')
     context = {
-        'posts':posts
+        'posts':posts,
     }
     return render(request, 'posts/post_list.html', context)
 
