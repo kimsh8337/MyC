@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+{% block title %}Movies{% endblock %}
+{% load static %}
+{% block css %}
+    <link rel="stylesheet" href="{% static '/movies/stylesheets/genre.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="container p-3">
+        <div class="mt-5 genre-list zindex-sticky">
+            <h3 class="my-4">Genre</h3>
+            {% for genre in genres %}
+                <span class="select-genre genre-button m-2" id="genre-{{ genre.id }}" data-genre-pk="{{ genre.id }}">{{ genre.name }}</span>
+            {% endfor %}
+            <hr>
+        </div>
+        <div class="row justify-content-center">
+            {% for movie in movies %}
+                <div class="col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3 card-deck movie-all" id="movie-{{ movie.id }}">
+                    <div class="card border-0 m-3 text-center img-hover-zoom" style="width: 18rem;"
+                        onclick="location.href=`{% url 'movies:movie_detail' movie.pk %}`">
+                        {% if movie.poster_path %}
+                        <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" 
+                            class="mw-100 poster-img" alt="Movie Poster">
+                        {% else %}
+                            <img src="https://media.comicbook.com/files/img/default-movie.png" 
+                            class="mw-100 poster-img" alt="Movie Poster">
+                        {% endif %}
+                        <div class="card-img-overlay">
+                            <p>{{ movie.title }}</p>
+                            <p>
+                                <i class="far fa-bookmark mx-2" data-toggle="tooltip" data-placement="top" title="Tooltip on top"></i>
+                                <i class="far fa-eye mx-2"></i>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    <script>
+        $("[data-toggle=’tooltip’]").tooltip()
+    </script>
+    {% include 'movies/genre_select.html' %}
+{% endblock %}

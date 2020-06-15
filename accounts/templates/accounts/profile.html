@@ -3,7 +3,7 @@
 {% load gravatar %}
 {% block content %}
 <div class="d-flex justify-content-center">
-    <div class="mx-5" style="width: 45rem;">
+    <div class="mt-5 mx-5" style="width: 45rem;">
         <img class="avatar float-right" src="{{ user.email|profile_url }}?s=120">
         <h2 class="mr-3 font-weight-bold">{{ user.username }}</h2>
         <p class='text-secondary'>Review member since {{ user.date_joined|date:"Y M"}}</p>
@@ -25,7 +25,7 @@
         <div class="flex-column">
         <h5 class="mb-3">My Post</h5>
         {% for post in user.post_set.all %}
-            <div class="card mb-4 post-a" style="width: 45rem;">
+            <div class="card mb-4 post-a bg-dark" style="width: 45rem;">
                 <div class="card-body">
                     <img class="avatar" src="{{ user.email|profile_url }}?s=50">
                 <span class="card-title ml-2">{{ user.username }}</span>
@@ -48,13 +48,12 @@
 
         <div class="flex-column">
             <h5 class="mb-3">My Selected</h5> 
-            {% for movie in user.selected_movies.all %}
-                <p>{{movie}}</p>
-                <div class="card mb-4 movie-a" style="width: 45rem;">
+            {% for select in user.movie_set.all %}
+                <div class="card mb-4 select-a" style="width: 45rem;">
                     <div class="card-body">
                         <img class="avatar" src="{{ user.email|profile_url }}?s=50">
                     <span class="card-title ml-2">{{ user.username }}</span>
-                    <a href="{% url 'movies:movie_detail' movie.id %}"><h3 class="card-title mt-3">{{ movie.title }}</h3></a>
+                    <a href="{% url 'movies:movie_detail' select.id %}"><h3 class="card-title mt-3">{{ select.movietitle }}</h3></a>
                     </div>
                 </div>
             {% empty %}

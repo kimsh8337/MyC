@@ -1,11 +1,11 @@
 
 {% load socialaccount %}
 <!-- Modal -->
-<div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="signupModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content bg-dark">
         <div class="modal-header border-0 pl-0">
-          <h5 class="modal-title w-100 text-center position-absolute" id="exampleModalLabel">Welcome Back</h5>
+          <h5 class="modal-title w-100 text-center position-absolute" id="exampleModalLabel">Join</h5>
           <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -14,9 +14,9 @@
           <div class="d-flex flex-column bd-highlight mb-3">
             <div class="mb-3 text-center">
               <a type="button" class="w-50 btn btn-outline-light" 
-                href="{% url 'accounts:login' %}">
+                href="{% url 'accounts:signup' %}">
                 <i class="far fa-envelope mr-2"></i>
-                Login with email</a>
+                Sign up with email</a>
             </div>
             <div class="mb-3 text-center">
               OR
@@ -25,17 +25,17 @@
               <a type="button" class="w-50 btn btn-outline-light" 
                 href="{% provider_login_url 'google' %}">
                 <i class="fab fa-google mr-2" style="color: #DB4437;"></i>
-                Login with Google</a>
+                Sign up with Google</a>
             </div>
             <div class="mb-3 text-center">
               <a type="button" class="w-50 btn btn-outline-light" 
                 href="{% provider_login_url 'naver' %}">
                 <span class="fa fa-naver mr-2"></span>
-                Login with Naver</a>
+                Sign up with Naver</a>
             </div>
             <div class="text-center mt-3">
-              <span class="mr-2">No account?</span>
-              <a href="#" data-dismiss="modal" data-toggle="modal" data-target="#signupModal">Create one</a>
+              <span class="mr-2">Already have an account?</span>
+              <a href="#" data-dismiss="modal" data-toggle="modal" data-target="#loginModal">Log in</a>
             </div>
           </div>
         </div>

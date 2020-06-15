@@ -1,18 +1,27 @@
 {% extends 'base.html' %}
 {% load bootstrap4 %}
+{% block title %}Login{% endblock %}
 {% block content %}
-<div class="mt-5 d-flex justify-content-center">
-    <div class="card" style="width: 50rem;">
-        <h3 class="card-header bg-white"><i class="fas fa-user-alt"></i> Log In</h3>
-        <div class="card-body">
-            <form action="" method="POST">
-                {% csrf_token %}
-                {% bootstrap_form form %}
-                <input class="btn btn-dark" type="submit" value='Login'>
-                <span class="ml-3 mr-1">No account?</span>
-                <a href="{% url 'accounts:signup' %}">Create one</a>
-            </form>
+<div class="head-cover" 
+        style="background-image: url('/static/images/cinemas.jpg');">
+    <div class="container">
+        <div class="mt-5 d-flex justify-content-center">
+            <div class="card account-card" style="width: 30rem;">
+                <h3 class="card-header border-0 text-center mt-3">Log in</h3>
+                <div class="card-body mx-4">
+                    <form action="" method="POST">
+                        {% csrf_token %}
+                        {% bootstrap_form form %}
+                        <button class="btn btn-info btn-block mt-5" value='Login'>Log In</button>
+                        <div class="my-3">
+                            <span class="mr-1">No account?</span>
+                            <a href="#" data-toggle="modal" data-target="#signupModal">Create one</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+{% include 'accounts/_signUpModal.html' %}
 {% endblock %}

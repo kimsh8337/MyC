@@ -1,0 +1,19 @@
+.card-hover-zoom{
+    overflow: hidden;
+    background-color:rgb(31, 31, 31) !important;
+    border-radius: 15px !important;
+    border: 1px solid black !important;
+}
+
+.card-hover-zoom img {
+    transition: transform .5s ease;
+}
+
+.card-hover-zoom:hover{
+    cursor: pointer;
+}
+
+.card-hover-zoom:hover img {
+    transform: scale(1.7);
+    opacity: 0.4;   
+}

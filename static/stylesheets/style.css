@@ -1,0 +1,47 @@
+body {
+    background-color:rgb(31, 31, 31) !important;
+    color: white !important;
+    margin-top: 0 !important;
+}
+.background-none {
+    background-color:rgb(31, 31, 31) !important;
+}
+.head-cover {
+    position:relative;
+    height: 90vh;
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: relative;
+    background-position: center top;
+    /* opacity: 0.4; */
+    top: 0 !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+.movie-nav {
+    top:0;
+    left: 0;
+    right: 0;
+}
+
+.avatar {
+    border-radius: 50%;
+    -moz-border-radius: 50%;
+    -webkit-border-radius: 50%;
+}
+.dropdown-item:hover {
+    color: black !important;
+}
+.fa-naver:before {
+    font-family: sans-serif;
+    font-size: 20px;
+    font-weight: bold;
+    content: 'N';
+    color: rgb(45, 180, 0);
+}
+
+.account-card {
+    background-color:rgb(31, 31, 31) !important;
+}

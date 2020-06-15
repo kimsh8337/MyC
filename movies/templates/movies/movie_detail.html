@@ -1,27 +1,54 @@
 {% extends 'base.html' %}
 {% load bootstrap4 %}
+{% block title %}{{ movie.title }}{% endblock %}
 {% block content %}
-    <h1>Detail</h1>
-    <p>{{ movie.title }}</p>
-    <a href="{% url 'posts:post_create' movie.id %}">글쓰기</a>
-    <hr>
-    <form action="{% url 'movies:rating_create' movie.id %}" method="POST">
-        {% csrf_token %}
-        {% bootstrap_form form %}
-        <button class="btn btn-secondary">SAVE</button>
-    </form>
-    <hr>
-    {% for rating in ratings %}
-        <p>{{ rating.content }} - {{ rating.user }} - {{ rating.rank }} - {{ rating.standard }}</p>
-        {% if request.user == rating.user %}
-                <form class='d-inline' action="{% url 'movies:rating_delete' movie.id rating.id %}" method="POST">
-                    {% csrf_token %}
-                    <button class="btn btn-dark"><i class="far fa-trash-alt"></i></button>
-                </form>
-                <form class='d-inline' action="{% url 'movies:rating_update' movie.id rating.id %}" method="POST">
-                    {% csrf_token %}
-                    <button class="btn btn-dark"><i class="fas fa-edit"></i></button>
-                </form>
-        {% endif %}
-    {% endfor %}
+    <div class="head-cover" 
+        style="background-image: url('https://image.tmdb.org/t/p/original/{{ movie.backdrop_path }}');">
+    </div>
+    <div class="container p-5">
+        <p>{{ movie.title }}</p>
+        <a href="{% url 'posts:post_create' movie.id %}">글쓰기</a>
+        <hr>
+        <button type="button" class="btn btn-outline-light form-check" value="{{ request.resolver_match.url_name }}"
+            data-toggle="modal" data-target="#commentCreate">의견 남기기</button>
+        {% include 'movies/comment_create.html' %}
+        <hr>
+        {% for rating in ratings %}
+            {% if rating.rank == 1 %}
+                <div class="card border-success mb-3 background-none">
+                    <div class="card-body">
+                    <blockquote class="blockquote mb-0">
+                        <p><i class="far fa-thumbs-up text-success"></i> {{ rating.content }}</p>
+                    </blockquote>
+                    </div>
+                </div>
+            {% else %}
+                <div class="card border-danger mb-3 background-none">
+                    <div class="card-body">
+                    <blockquote class="blockquote mb-0">
+                        <p><i class="far fa-thumbs-down text-danger"></i> {{ rating.content }}</p>
+                    </blockquote>
+                    </div>
+                </div>
+            {% endif %}
+            {% if request.user == rating.user %}
+                    <form class='d-inline' action="{% url 'movies:rating_delete' movie.id rating.id %}" method="POST">
+                        {% csrf_token %}
+                        <button><i class="far fa-trash-alt"></i></button>
+                    </form>
+                    <a type="button" href="{% url 'movies:rating_update' movie.id rating.id %}"
+                        class="btn btn-dark">수정</a>
+                    {% include 'movies/comment_edit.html' %}
+            {% endif %}
+        {% endfor %}
+        <script>
+            const formCheck = document.querySelector('.form-check').value
+            console.log(formCheck)
+            if (formCheck !== 'movie_detail'){
+                $(window).load(function () {
+                $('#commentEdit').modal('show');
+            });
+            }
+     </script>
+    </div>
 {% endblock %}
