@@ -1,65 +1,154 @@
 {% extends 'base.html' %}
 {% load bootstrap4 %}
 {% load gravatar %}
+{% load static %}
+{% block title %}@{{ user.username }}{% endblock %}
+{% block css %}
+    <link rel="stylesheet" href="{% static '/accounts/stylesheets/profile.css' %}">
+{% endblock %}
+
 {% block content %}
-<div class="d-flex justify-content-center">
-    <div class="mx-5" style="width: 45rem;">
-        <img class="avatar float-right" src="{{ user.email|profile_url }}?s=120">
-        <h2 class="mr-3 font-weight-bold">{{ user.username }}</h2>
-        <p class='text-secondary'>Review member since {{ user.date_joined|date:"Y M"}}</p>
-        <p><i class="fas fa-at"></i> {{ user.email }}</p>
-        {% with user_followers=user.followers.all %}
-            <p>{{ user.followings.count }}  Following {{ user_followers|length }} Followers</p>
-            {% if request.user != user %}
-                {% if request.user in user_followers %}
-                    <a href="{% url 'accounts:follow' user.pk %}" type="button" class="btn btn-success">following</a>
-                {% else %}
-                    <a href="{% url 'accounts:follow' user.pk %}" type="button" class="btn btn-outline-success">follow</a>
-                {% endif %}
-            {% endif %}
-        {% endwith %}
-    </div>
-    </div>
-    <hr>
-    <div class="d-flex justify-content-center flex-column">
-        <div class="flex-column">
-        <h5 class="mb-3">My Post</h5>
-        {% for post in user.post_set.all %}
-            <div class="card mb-4 post-a" style="width: 45rem;">
-                <div class="card-body">
-                    <img class="avatar" src="{{ user.email|profile_url }}?s=50">
-                <span class="card-title ml-2">{{ user.username }}</span>
-                <a href="{% url 'posts:post_detail' post.id %}"><h3 class="card-title mt-3">{{ post.title }}</h3></a>
-                <p class="card-text text-muted">{{ post.content|slice:":50" }}</p>
-                <div class="row justify-content-between">
-                            <div class="col-4">
-                            {{ post.like_users.count }} like · {{ post.comment_set.count }} comments
-                            </div>
-                            <span class="col-4 text-right">
-                            {{ post.created_at|date:"Y-m-d H:i" }}
-                            </span>
-                        </div>
+<div class="container">
+    <div class="profile-wrapper-1">
+        <div class="d-flex justify-content-center mb-4">
+            <div class="mx-5 my-4" style="width: 45rem;">
+                <img class="avatar float-left" src="{{ user.email|profile_url }}?s=150">
+                <div class="text-right">
+                    <h2 class="font-weight-bold"><i class="fas fa-baby mr-2"></i>{{ user.username }}</h2>
+                    <p class='myc-color'>MyCinema <span class="text-secondary">member since {{ user.date_joined|date:"Y M"}}</span></p>
+                    <p><i class="fas fa-at"></i> {{ user.email }}</p>
+                    <div></div>
+                    {% with user_followers=user.followers.all %}
+                        <p>{{ user.followings.count }}  Following {{ user_followers|length }} Followers</p>
+                        {% if request.user != user %}
+                            {% if request.user in user_followers %}
+                                <a href="{% url 'accounts:follow' user.pk %}" type="button" class="btn btn-success btn-sm"><i class="fas fa-user-minus mr-2"></i>following</a>
+                            {% else %}
+                                <a href="{% url 'accounts:follow' user.pk %}" type="button" class="btn btn-outline-success btn-sm"><i class="fas fa-user-plus mr-2"></i>follow</a>
+                            {% endif %}
+                        {% endif %}
+                    {% endwith %}
                 </div>
             </div>
-        {% empty %}
-            <p class="text-secondary">아직 작성한 글이 없습니다! 첫 글을 작성해 보세요 :)</p>
-        {% endfor %}
         </div>
-
-        <div class="flex-column">
-            <h5 class="mb-3">My Selected</h5> 
-            {% for select in user.movie_set.all %}
-                <div class="card mb-4 select-a" style="width: 45rem;">
-                    <div class="card-body">
-                        <img class="avatar" src="{{ user.email|profile_url }}?s=50">
-                    <span class="card-title ml-2">{{ user.username }}</span>
-                    <a href="{% url 'movies:movie_detail' select.id %}"><h3 class="card-title mt-3">{{ select.movietitle }}</h3></a>
+        <div class="mt-5">
+            <h5 class="mb-3 mr-4 d-inline select-post select-button">My Post {{ post_cnt }}</h5>
+            <h5 class="mb-3 mr-4 d-inline select-saved select-button">Saved Movies {{ saved_cnt }}</h5>
+            <h5 class="mb-3 mr-4 d-inline select-watched select-button">Watched Movies {{ watched_cnt }}</h5>
+        </div>
+        <hr class="border-bottom-1 border-white">
+        <div class="profile-wrapper-2">
+            <div class="post-inner">
+                {% for post in posts %}
+                    <div class="card mb-4 post-a" style="width: 45rem;">
+                        <div class="card-body">
+                            <img class="avatar" src="{{ user.email|profile_url }}?s=60">
+                        <span class="card-title ml-2">{{ user.username }}</span>
+                        <a href="{% url 'posts:post_detail' post.id %}"><h3 class="card-title mt-3">{{ post.title }}</h3></a>
+                        <p class="card-text text-muted">{{ post.content|slice:":50" }}</p>
+                        <div class="row justify-content-between">
+                                    <div class="col-4">
+                                    {{ post.like_users.count }} like · {{ post.comment_set.count }} comments
+                                    </div>
+                                    <span class="col-4 text-right">
+                                    {{ post.created_at|date:"Y-m-d H:i" }}
+                                    </span>
+                                </div>
+                        </div>
                     </div>
+                {% empty %}
+                    <p class="text-secondary">아직 작성한 글이 없습니다! 첫 글을 작성해 보세요 :)</p>
+                {% endfor %}
+            </div>
+            <div class="saved-inner" style="display: none;">
+                <div class="row justify-content-center">
+                    {% for movie in saved %}
+                        <div class="col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3 card-deck movie-all" id="movie-{{ movie.id }}">
+                            <div class="card border-0 m-3 text-center img-hover-zoom" style="width: 18rem;"
+                                onclick="location.href=`{% url 'movies:movie_detail' movie.pk %}`">
+                                {% if movie.poster_path %}
+                                <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" 
+                                    class="mw-100 poster-img" alt="Movie Poster">
+                                {% else %}
+                                    <img src="https://media.comicbook.com/files/img/default-movie.png" 
+                                    class="mw-100 poster-img" alt="Movie Poster">
+                                {% endif %}
+                                <div class="card-img-overlay">
+                                    <p>{{ movie.title }}</p>
+                                    <p>
+                                        <i class="far fa-bookmark mx-2" data-toggle="tooltip" data-placement="top" title="Tooltip on top"></i>
+                                        <i class="far fa-eye mx-2"></i>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
                 </div>
-            {% empty %}
-                <p class="text-secondary">아직 찜한 영화가 없습니다 :)</p>
-            {% endfor %}
+            </div>
+            <div class="watched-inner" style="display: none;">
+                <div class="row justify-content-center">
+                    {% for movie in watched %}
+                        <div class="col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3 card-deck movie-all" id="movie-{{ movie.id }}">
+                            <div class="card border-0 m-3 text-center img-hover-zoom" style="width: 18rem;"
+                                onclick="location.href=`{% url 'movies:movie_detail' movie.pk %}`">
+                                {% if movie.poster_path %}
+                                <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" 
+                                    class="mw-100 poster-img" alt="Movie Poster">
+                                {% else %}
+                                    <img src="https://media.comicbook.com/files/img/default-movie.png" 
+                                    class="mw-100 poster-img" alt="Movie Poster">
+                                {% endif %}
+                                <div class="card-img-overlay">
+                                    <p>{{ movie.title }}</p>
+                                    <p>
+                                        <i class="far fa-bookmark mx-2" data-toggle="tooltip" data-placement="top" title="Tooltip on top"></i>
+                                        <i class="far fa-eye mx-2"></i>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
         </div>
+    </div>
 </div>
 
+<script>
+    const selectPostButton = document.querySelector('.select-post');
+    const selectSavedButton = document.querySelector('.select-saved');
+    const selectWatchedButton = document.querySelector('.select-watched');
+
+    const postInner = document.querySelector('.post-inner');
+    const savedInner = document.querySelector('.saved-inner');
+    const watchedInner = document.querySelector('.watched-inner');
+
+    selectSavedButton.addEventListener('click', function(event){
+        selectPostButton.style.color = ''
+        selectWatchedButton.style.color = ''
+        selectSavedButton.style.color = '#39CCCC'
+
+        postInner.style.display = 'none'
+        watchedInner.style.display = 'none'
+        savedInner.style.display = '' 
+        });
+    selectWatchedButton.addEventListener('click', function(event){
+        selectPostButton.style.color = ''
+        selectSavedButton.style.color = ''
+        selectWatchedButton.style.color = '#39CCCC'
+        
+        postInner.style.display = 'none'
+        savedInner.style.display = 'none'
+        watchedInner.style.display = '' 
+    });
+    selectPostButton.addEventListener('click', function(event){
+        selectWatchedButton.style.color = ''
+        selectSavedButton.style.color = ''
+        selectPostButton.style.color = '#39CCCC'
+
+        savedInner.style.display = 'none'
+        watchedInner.style.display = 'none'
+        postInner.style.display = ''
+    });
+</script>
 {% endblock %}

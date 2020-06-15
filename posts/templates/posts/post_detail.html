@@ -2,7 +2,7 @@
 {% load bootstrap4 %}
 {% load static %}
 {% block css %}
-<link rel="stylesheet" href="{% static '/posts/stylesheets/posts.css' %}">
+    <link rel="stylesheet" href="{% static '/posts/stylesheets/posts.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -17,20 +17,28 @@
                 <div class="card-body">
                     <h5 class="card-title" style="font-size: 3.5rem; text-align: center;">{{post.title}}</h5>
                     <a href="{% url 'accounts:profile' post.user.id %}">{{ post.user.username }}님의 작성글</a>
+                    <div class="column justify-content-between">
                     <p class="card-text" style="font-size: 1.7rem;">{{post.content}}</p>
-                    {% if user in post.like_users.all %}
-                    <i class="fas fa-heart fa-lg like-button" style="color:crimson" data-post-pk="{{ post.pk }}"></i>
-                    {% else %}
-                    <i class="fas fa-heart fa-lg like-button" style="color:blue" data-post-pk="{{ post.pk }}"></i>
-                    {% endif %}
-                    <span id="like-count-{{ post.pk }}">{{ post.like_users.all.count }}</span>
-                    <p class="card-text"><small class="text-muted">{{ post.updated_at}}</small></p>
-                    {% if post.user == request.user %}
-                    <a href="{% url 'posts:post_update' post.pk %}"><button class="btn btn-outline-light"><i class="far fa-edit"></i></button></a>
-                    <form action="{% url 'posts:post_delete' post.pk %}" method="POST" class="d-inline">
-                        {% csrf_token %}
-                        <button class="btn btn-outline-light"><i class="far fa-trash-alt"></i></button>
-                    </form>
+                        <div class="row justify-content-between">
+                            <div class="ml-3">
+                                {% if user in post.like_users.all %}
+                                <i class="fas fa-heart fa-lg like-button" style="font-size: 1.7rem; color:crimson" data-post-pk="{{ post.pk }}"></i>
+                                {% else %}
+                                <i class="fas fa-heart fa-lg like-button" style="font-size: 1.7rem; color:blue" data-post-pk="{{ post.pk }}"></i>
+                                {% endif %}
+                                <span id="like-count-{{ post.pk }}" style="font-size: 1.3rem;">{{ post.like_users.all.count }}</span>
+                            </div>
+                            <div class="row mr-2">
+                                <p class="card-text mr-3" style="font-size:x-large;"><small class="text-muted">{{ post.updated_at}}</small></p>
+                                {% if post.user == request.user %}
+                                <a href="{% url 'posts:post_update' post.pk %}"><button class="btn btn-outline-light"><i class="far fa-edit"></i></button></a>
+                                <form action="{% url 'posts:post_delete' post.pk %}" method="POST" class="d-inline">
+                                    {% csrf_token %}
+                                    <button class="btn btn-outline-light"><i class="far fa-trash-alt"></i></button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                     {% endif %}
                 </div>
             </div>
@@ -52,8 +60,7 @@
     <h5>Comments</h5>
     <div class="list-group">
         {% for comment in post.comment_set.all %}
-        <a href="#" class="list-group-item list-group-item-action bg-dark text-white">{{ comment.user.username }} :
-            {{ comment.content }}
+        <a href="#" class="list-group-item list-group-item-action bg-dark text-white">{{ comment.user.username }} : {{ comment.content }}
             {% if comment.user == request.user %}
             <form action="{% url 'posts:comments_delete' post.pk comment.pk %}" method="POST">
                 {% csrf_token %}
@@ -63,13 +70,11 @@
         {% endif %}
         {% endfor %}
     </div>
-    <hr>
     <form action="{% url 'posts:comments' post.pk %}" method="POST">
         {% csrf_token %}
         {% bootstrap_form form %}
         <button class="btn btn-primary">Write</button>
     </form>
-    <hr>
 </div>
 
 <script>

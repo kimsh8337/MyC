@@ -14,18 +14,22 @@
           <div class="card m-2 text-center bg-dark card-hover-zoom" style="width: 13rem;"
           onclick="location.href=`{% url 'posts:post_detail' post.pk %}`">
             <img src="https://image.tmdb.org/t/p/original/{{ post.movie.poster_path }}" class="card-img-top" alt="movie_poster">
+            <p class="m-0" style="font-size: 0.4rem;">
+              <i class="fas fa-heart mx-2" data-toggle="tooltip" data-placement="top" title="Tooltip on top">  {{ post.like_users.count }}</i>
+            </p>
             <div class="card-body" style="padding: 5px;">
               <h5 class="card-title">{{ post.title }}</h5>
               <p class="card-text">{{ post.content|truncatechars_html:7 }}</p>
-              <!-- <a href="{% url 'posts:post_detail' post.pk %}" class="btn btn-primary">상세보기</a> -->
             </div>
+            
           </div>
       </div>
 
   {% endfor %}  
-  </div>
-    
-  
+  </div>  
 </div>
+<script>
+  $("[data-toggle=’tooltip’]").tooltip()
+</script>
 
 {% endblock %}
