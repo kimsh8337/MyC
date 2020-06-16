@@ -84,7 +84,7 @@ def comments(request, post_pk):
 @require_POST
 @login_required
 def comments_delete(request, post_pk, comment_pk):
-    comment = Comment.objects.get(pk=comment_pk)
+    comment = get_object_or_404(Comment, pk=comment_pk)
     if comment.user == request.user:
         comment.delete()
     return redirect('posts:post_detail', post_pk)

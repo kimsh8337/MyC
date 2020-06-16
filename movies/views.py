@@ -18,13 +18,14 @@ def index(request):
     saved_unseen = []
     saved_cnt = 0
     ratings = []
+    final_rec = []
 
     if request.user.is_authenticated:
         # 사용자가 찜한 영화
         selected_movies = request.user.selcted_movies.all()
+        for movie in selected_movies:
+            user_selected.append(movie)
         
-        # 찜한 영화 1개 이상이 아니면 보이지 않게
-
         # 사용자가 본 영화
         watched_movies = request.user.watched_movies.all()
         for movie in watched_movies:
@@ -35,7 +36,6 @@ def index(request):
             if movie not in watched_movies:
                 saved_unseen.append(movie)
 
-        # 2. 찜한 정보를 바탕으로 장르 추천
         user_genres = {}
         user_point = {}
         for movie in selected_movies:
@@ -48,18 +48,12 @@ def index(request):
                     else:
                         user_point[tmp] += 1
             user_selected.append(movie)
-            tmp = movie.genre_ids.all()
-            key = tmp[0].name
-            if key not in user_genres:
-                user_genres[key] = 1
-            else:
-                user_genres[key] += 1
-        # 모두 10개 영화가 나올때 까지 while 반복
-        
+            
         if len(saved_unseen) > 10:
             saved_cnt = 10
         else:
             saved_cnt = len(saved_unseen)
+        
         user_liked = []
         user_hated = []
 
@@ -71,18 +65,80 @@ def index(request):
                         if rating.rank == 1:
                             user_liked.append(rating.movie)
                         else:
-                            user_hated.append(rating.movie)
-
-        print(user_liked)
-        print(user_hated)
-
-    # 3. 찜한 목록 중 기준 추천
+                            user_hated.append(rating.movie)           
+        year = ''
+        year_dict = {}
+        lang_dict = {}
+        genre_dict = {}
+        year_sorted = []
+        lang_sorted = []
+        genre_sorted = []
+        cnt = 0
+        while cnt <= 10:
+            # 개봉 날짜별 추천 3개
+            for movie in user_selected:
+                year = str(movie.release_date.year)
+                year = year[:3]
+                if year not in year_dict:
+                    year_dict[year] = 1
+                else:
+                    year_dict[year] += 1 
+            year_sorted = sorted(year_dict.items(), key=lambda x: x[1], reverse=True)
+            for i in range(3):
+                movie_rec = Movie.objects.filter(release_date__startswith=year_sorted[i][0]).order_by('?')[0]
+                if movie_rec in saved_unseen or movie_rec in user_watched:
+                    continue
+                if movie_rec in user_liked or movie_rec in user_hated:
+                    continue
+                final_rec.append(movie_rec)
+                cnt += 1
+            # 사용자가 본 영화 기준 언어 추천
+            for movie in watched_movies:
+                lang = movie.original_language
+                if lang not in lang_dict:
+                    lang_dict[lang] = 1
+                else:
+                    lang_dict[lang] += 1 
+            lang_sorted = sorted(lang_dict.items(), key=lambda x: x[1], reverse=True)
+            for i in range(3):
+                if i >= len(lang_sorted):
+                    num = 0
+                else:
+                    num = i
+                movie_rec = Movie.objects.filter(original_language=lang_sorted[num][0]).order_by('?')[0]
+                if movie_rec in saved_unseen or movie_rec in user_watched:
+                    continue
+                if movie_rec in user_liked or movie_rec in user_hated:
+                    continue
+                final_rec.append(movie_rec)
+                cnt += 1
+            # 사용자가 저장한 영화 기준 장르 추천
+            for movie in user_selected:
+                movie_genres = movie.genre_ids.all()
+                for genre in movie_genres:
+                    if genre.name not in genre_dict:
+                        genre_dict[genre.name] = 1
+                    else:
+                        genre_dict[genre.name] += 1
+                genre_sorted = sorted(genre_dict.items(), key=lambda x: x[1], reverse=True)
+            for i in range(4):
+                genre_rec = Genre.objects.get(name=genre_sorted[i][0])
+                movie_rec = genre_rec.movie_genres.all().order_by('?')[0]
+                if movie_rec in saved_unseen or movie_rec in user_watched:
+                    continue
+                if movie_rec in user_liked or movie_rec in user_hated:
+                    continue
+                final_rec.append(movie_rec)
+                cnt += 1
     context = {
         'movie_top': movies[0],
         'movies_top3': movies[1:4],
         'saved_top_a' : saved_unseen[:5],
         'saved_top_b' : saved_unseen[6:],
         'saved_cnt': saved_cnt,
+        'final_rec': final_rec[:10],
+        'final_top_a': final_rec[:5],
+        'final_top_b': final_rec[5:10],
     }
     return render(request, 'movies/index.html', context)
 
@@ -121,11 +177,50 @@ def genre_filter(request, genre_pk):
 def movie_detail(request, movie_pk):
     movie = get_object_or_404(Movie, pk=movie_pk)
     ratings = movie.rating_set.order_by('-pk')
+    movie_rank = [0] * 2
+    movie_point = [0] * 5
+
+    for rating in ratings:
+        rank = rating.rank
+        point = rating.standard
+        if rank == 1:
+            movie_rank[0] += 1
+        else:
+            movie_rank[1] += 1
+
+        if point == 1:
+            movie_point[0] += 1
+        elif point == 2:
+            movie_point[1] += 1
+        elif point == 3:
+            movie_point[2] += 1
+        elif point == 4:
+            movie_point[3] += 1
+        else:
+            movie_point[4] += 1
+    
+    rank_per = [0] * 2
+    point_per = [0] * 5
+    for i in range(2):
+        if movie_rank[i] != 0:
+            rank_per[i] = movie_rank[i] / sum(movie_rank) * 100
+    print(movie_rank)
+    for j in range(5):
+        if movie_point[j] != 0:
+            point_per[j] = movie_point[j] / sum(movie_point) * 100
+
+    print(rank_per)
+    print(point_per)
+
     form = RatingForm()
     context = {
         'movie': movie,
         'ratings': ratings,
         'form': form,
+        'rank_per': rank_per,
+        'sum_rank': sum(movie_rank),
+        'point_per': point_per,
+        'sum_point': sum(movie_point),
     }
     return render(request, 'movies/movie_detail.html', context)
 

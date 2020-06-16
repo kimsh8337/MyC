@@ -59,12 +59,6 @@ def logout(request):
 def profile(request, user_id):
     User = get_user_model()
     user = get_object_or_404(User, pk=user_id)
-<<<<<<< HEAD
-    context = {
-        'user':user
-    }
-    return render(request, 'accounts/profile.html', context)
-=======
     posts = user.post_set.all()
     saved = user.selcted_movies.all()
     watched = user.watched_movies.all()
@@ -105,7 +99,6 @@ def watched(request, user_id):
 
     return JsonResponse(context)
 
->>>>>>> 3529c33202d5832a7815dd47001c5b587cd8580b
 
 def follow(request, user_id):
     if not request.user.is_authenticated:

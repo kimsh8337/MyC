@@ -12,15 +12,47 @@
       <div class="carousel-item active">
         <div>
           <h1 class="tag">{{ movie.title }}</h1>
+          <p class="tag1">{{ movie.overview }}</p>
+          <p class="tag2">
+            {% if user in movie.selected_users.all %}
+                <i class="fas fa-bookmark mx-2 select-button" style="color:#39CCCC" data-movie-pk="{{ movie.pk }}">
+                    <span id="select-count-{{ movie.pk }}">{{ movie.selected_users.all.count }}</span></i>
+            {% else %}
+                <i class="fas fa-bookmark mx-2 select-button" style="color:white" data-movie-pk="{{ movie.pk }}">
+                    <span id="select-count-{{ movie.pk }}">{{ movie.selected_users.all.count }}</span></i>
+            {% endif %}
+            {% if user in movie.watched_users.all %}
+                <i class="fas fa-eye mx-2 watch-button" style="color:#39CCCC" data-movie-pk="{{ movie.pk }}">
+                    <span id="watch-count-{{ movie.pk }}">{{ movie.watched_users.all.count }}</span></i>
+            {% else %}
+                <i class="fas fa-eye mx-2 watch-button" style="color:white" data-movie-pk="{{ movie.pk }}">
+                    <span id="watch-count-{{ movie.pk }}">{{ movie.watched_users.all.count }}</span></i>
+            {% endif %}
+            {{ movie.release_date }}
+          </p>
+
           <img src="https://image.tmdb.org/t/p/original/{{ movie.backdrop_path }}" 
             class="carousel-main-img d-block w-100" alt="backdrop img">
         </div>
       </div>
   </div>
-    <!-- <div class="head-cover" 
-        style="background-image: url('https://image.tmdb.org/t/p/original/{{ movie.backdrop_path }}');">
-    </div> -->
+
     <div class="container p-5">
+        <div>MyC 사용자 의견</div>
+        <div class="progress" style="height: 20px; width:500px" >
+            {% if sum_rank == 0 %}
+                <div class="progress-bar bg-dark progress-bar-striped progress-bar-animated" 
+                    role="progressbar" style="width: 100%" aria-valuenow="20" 
+                    aria-valuemin="0" aria-valuemax="100">아직 정보가 없습니다!</div>
+            {% else %}
+                <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                    role="progressbar" style="width: {{ rank_per.0|floatformat }}%" aria-valuenow="15" 
+                    aria-valuemin="0" aria-valuemax="100">좋아요 {{ rank_per.0|floatformat }}%</div>
+                <div class="progress-bar bg-danger progress-bar-striped progress-bar-animated" 
+                    role="progressbar" style="width: {{ rank_per.1|floatformat }}%" aria-valuenow="20" 
+                    aria-valuemin="0" aria-valuemax="100">싫어요 {{ rank_per.1|floatformat }}%</div>
+            {% endif %}
+        </div>
         <div style="text-align: right;">
             <button type="button" class="btn btn-outline-light form-check" value="{{ request.resolver_match.url_name }}"
                 data-toggle="modal" data-target="#commentCreate"><i class="fas fa-thumbs-up"></i> 의견 남기기</button>
@@ -66,6 +98,45 @@
             $('#commentEdit').modal('show');
         });
         }
+        const selectButtons = document.querySelectorAll('.select-button');
+        selectButtons.forEach(function (selectButton) {
+            selectButton.addEventListener('click', function (event) {
+                const moviePk = event.target.dataset.moviePk
+                const countInfo = document.querySelector(`#select-count-${moviePk}`)
+                axios.get(`/movies/${moviePk}/selected/`)
+                    .then(function (response) {
+                        const count = response.data.count
+                        const select = response.data.select                    
+                        if (select) {
+                            event.target.style.color = "#39CCCC"
+                        } else {
+                            event.target.style.color = "white"
+                        }
+                        countInfo.innerText = `${count}`
+                    });
+            });
+        });
+
+        const watchButtons = document.querySelectorAll('.watch-button');
+        watchButtons.forEach(function (watchButton) {
+            watchButton.addEventListener('click', function (event) {
+                const moviePk = event.target.dataset.moviePk
+                const countInfo = document.querySelector(`#watch-count-${moviePk}`)
+                axios.get(`/movies/${moviePk}/watched/`)
+                    .then(function (response) {
+                        const count = response.data.count
+                        const watch = response.data.watch                    
+                        if (watch) {
+                            event.target.style.color = "#39CCCC"
+                        } else {
+                            event.target.style.color = "white"
+                        }
+                        countInfo.innerText = `${count}`
+                    });
+            });
+        });
+        
+
  </script>
 </div>
 {% endblock %}
