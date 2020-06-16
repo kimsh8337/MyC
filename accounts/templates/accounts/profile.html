@@ -105,27 +105,6 @@
                     {% endfor %}
                 </div>
             </div>
-<<<<<<< HEAD
-        {% empty %}
-            <p class="text-secondary">아직 작성한 글이 없습니다! 첫 글을 작성해 보세요 :)</p>
-        {% endfor %}
-        </div>
-
-        <div class="flex-column">
-            <h5 class="mb-3">My Selected</h5> 
-            {% for saved_movie in saved %}
-                <p>{{ saved_movie.title }}</p>
-                <!-- <div class="card mb-4 select-a" style="width: 45rem;">
-                    <div class="card-body">
-                        <img class="avatar" src="{{ user.email|profile_url }}?s=50">
-                    <span class="card-title ml-2">{{ user.username }}</span>
-                    <a href="{% url 'movies:movie_detail' select.id %}"><h3 class="card-title mt-3">{{ saved_movie.title }}</h3></a>
-                    </div>
-                </div> -->
-            {% empty %}
-                <p class="text-secondary">아직 찜한 영화가 없습니다 :)</p>
-            {% endfor %}
-=======
             <div class="watched-inner" style="display: none;">
                 <div class="row justify-content-center">
                     {% for movie in watched %}
@@ -151,13 +130,9 @@
                     {% endfor %}
                 </div>
             </div>
->>>>>>> 3529c33202d5832a7815dd47001c5b587cd8580b
         </div>
     </div>
 </div>
-<<<<<<< HEAD
-{% include 'movies/movie_select.html' %}
-=======
 
 <script>
     const selectPostButton = document.querySelector('.select-post');
@@ -233,5 +208,4 @@
         });
     });
 </script>
->>>>>>> 3529c33202d5832a7815dd47001c5b587cd8580b
 {% endblock %}

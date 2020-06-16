@@ -30,106 +30,107 @@ def index(request):
         watched_movies = request.user.watched_movies.all()
         for movie in watched_movies:
             user_watched.append(movie)
-        
-        # 1. 찜했는데 안본영화 나열
-        for movie in selected_movies:
-            if movie not in watched_movies:
-                saved_unseen.append(movie)
+        if len(selected_movies) or len(watched_movies):
+            # 1. 찜했는데 안본영화 나열
+            for movie in selected_movies:
+                if movie not in watched_movies:
+                    saved_unseen.append(movie)
 
-        user_genres = {}
-        user_point = {}
-        for movie in selected_movies:
-            ratings = movie.rating_set.all()
-            if ratings:
-                for rating in ratings:
-                    tmp = rating.standard
-                    if tmp not in user_point:
-                        user_point[tmp] = 1
-                    else:
-                        user_point[tmp] += 1
-            user_selected.append(movie)
-            
-        if len(saved_unseen) > 10:
-            saved_cnt = 10
-        else:
-            saved_cnt = len(saved_unseen)
-        
-        user_liked = []
-        user_hated = []
-
-        for movie in user_watched:
-            ratings = movie.rating_set.all()
-            if tmp:
-                for rating in ratings:
-                    if request.user == rating.user:
-                        if rating.rank == 1:
-                            user_liked.append(rating.movie)
+            user_genres = {}
+            user_point = {}
+            for movie in selected_movies:
+                ratings = movie.rating_set.all()
+                if ratings:
+                    for rating in ratings:
+                        tmp = rating.standard
+                        if tmp not in user_point:
+                            user_point[tmp] = 1
                         else:
-                            user_hated.append(rating.movie)           
-        year = ''
-        year_dict = {}
-        lang_dict = {}
-        genre_dict = {}
-        year_sorted = []
-        lang_sorted = []
-        genre_sorted = []
-        cnt = 0
-        while cnt <= 10:
-            # 개봉 날짜별 추천 3개
-            for movie in user_selected:
-                year = str(movie.release_date.year)
-                year = year[:3]
-                if year not in year_dict:
-                    year_dict[year] = 1
-                else:
-                    year_dict[year] += 1 
-            year_sorted = sorted(year_dict.items(), key=lambda x: x[1], reverse=True)
-            for i in range(3):
-                movie_rec = Movie.objects.filter(release_date__startswith=year_sorted[i][0]).order_by('?')[0]
-                if movie_rec in saved_unseen or movie_rec in user_watched:
-                    continue
-                if movie_rec in user_liked or movie_rec in user_hated:
-                    continue
-                final_rec.append(movie_rec)
-                cnt += 1
-            # 사용자가 본 영화 기준 언어 추천
-            for movie in watched_movies:
-                lang = movie.original_language
-                if lang not in lang_dict:
-                    lang_dict[lang] = 1
-                else:
-                    lang_dict[lang] += 1 
-            lang_sorted = sorted(lang_dict.items(), key=lambda x: x[1], reverse=True)
-            for i in range(3):
-                if i >= len(lang_sorted):
-                    num = 0
-                else:
-                    num = i
-                movie_rec = Movie.objects.filter(original_language=lang_sorted[num][0]).order_by('?')[0]
-                if movie_rec in saved_unseen or movie_rec in user_watched:
-                    continue
-                if movie_rec in user_liked or movie_rec in user_hated:
-                    continue
-                final_rec.append(movie_rec)
-                cnt += 1
-            # 사용자가 저장한 영화 기준 장르 추천
-            for movie in user_selected:
-                movie_genres = movie.genre_ids.all()
-                for genre in movie_genres:
-                    if genre.name not in genre_dict:
-                        genre_dict[genre.name] = 1
+                            user_point[tmp] += 1
+                user_selected.append(movie)
+                
+            if len(saved_unseen) > 10:
+                saved_cnt = 10
+            else:
+                saved_cnt = len(saved_unseen)
+            
+            user_liked = []
+            user_hated = []
+
+            for movie in user_watched:
+                ratings = movie.rating_set.all()
+                if tmp:
+                    for rating in ratings:
+                        if request.user == rating.user:
+                            if rating.rank == 1:
+                                user_liked.append(rating.movie)
+                            else:
+                                user_hated.append(rating.movie)           
+            year = ''
+            year_dict = {}
+            lang_dict = {}
+            genre_dict = {}
+            year_sorted = []
+            lang_sorted = []
+            genre_sorted = []
+            cnt = 0
+            while cnt <= 10:
+                # 개봉 날짜별 추천 3개
+                for movie in user_selected:
+                    year = str(movie.release_date.year)
+                    year = year[:3]
+                    if year not in year_dict:
+                        year_dict[year] = 1
                     else:
-                        genre_dict[genre.name] += 1
-                genre_sorted = sorted(genre_dict.items(), key=lambda x: x[1], reverse=True)
-            for i in range(4):
-                genre_rec = Genre.objects.get(name=genre_sorted[i][0])
-                movie_rec = genre_rec.movie_genres.all().order_by('?')[0]
-                if movie_rec in saved_unseen or movie_rec in user_watched:
-                    continue
-                if movie_rec in user_liked or movie_rec in user_hated:
-                    continue
-                final_rec.append(movie_rec)
-                cnt += 1
+                        year_dict[year] += 1 
+                year_sorted = sorted(year_dict.items(), key=lambda x: x[1], reverse=True)
+                for i in range(3):
+                    movie_rec = Movie.objects.filter(release_date__startswith=year_sorted[i][0]).order_by('?')[0]
+                    if movie_rec in saved_unseen or movie_rec in user_watched:
+                        continue
+                    if movie_rec in user_liked or movie_rec in user_hated:
+                        continue
+                    final_rec.append(movie_rec)
+                    cnt += 1
+                # 사용자가 본 영화 기준 언어 추천
+                for movie in watched_movies:
+                    lang = movie.original_language
+                    if lang not in lang_dict:
+                        lang_dict[lang] = 1
+                    else:
+                        lang_dict[lang] += 1 
+                if len(lang_sorted):
+                    lang_sorted = sorted(lang_dict.items(), key=lambda x: x[1], reverse=True)
+                    for i in range(3):
+                        if i >= len(lang_sorted):
+                            num = 0
+                        else:
+                            num = i
+                        movie_rec = Movie.objects.filter(original_language=lang_sorted[num][0]).order_by('?')[0]
+                        if movie_rec in saved_unseen or movie_rec in user_watched:
+                            continue
+                        if movie_rec in user_liked or movie_rec in user_hated:
+                            continue
+                        final_rec.append(movie_rec)
+                        cnt += 1
+                # 사용자가 저장한 영화 기준 장르 추천
+                for movie in user_selected:
+                    movie_genres = movie.genre_ids.all()
+                    for genre in movie_genres:
+                        if genre.name not in genre_dict:
+                            genre_dict[genre.name] = 1
+                        else:
+                            genre_dict[genre.name] += 1
+                    genre_sorted = sorted(genre_dict.items(), key=lambda x: x[1], reverse=True)
+                for i in range(4):
+                    genre_rec = Genre.objects.get(name=genre_sorted[i][0])
+                    movie_rec = genre_rec.movie_genres.all().order_by('?')[0]
+                    if movie_rec in saved_unseen or movie_rec in user_watched:
+                        continue
+                    if movie_rec in user_liked or movie_rec in user_hated:
+                        continue
+                    final_rec.append(movie_rec)
+                    cnt += 1
     context = {
         'movie_top': movies[0],
         'movies_top3': movies[1:4],
