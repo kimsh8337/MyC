@@ -5,6 +5,17 @@ body {
     /* font-family: 'Noto Sans KR', sans-serif !important; */
     font-family: 'Do Hyeon', sans-serif !important;
 }
+.messages {
+    position: relative;
+    z-index: 3 !important;
+}
+.carousel-div {
+    z-index: 1 !important;
+}
+.genre-list {
+    z-index: 1 !important;
+}
+
 .background-none {
     background-color:rgb(31, 31, 31) !important;
 }
@@ -27,13 +38,15 @@ body {
     background-size: cover;
     position: relative;
     background-position: center top;
-    opacity: 0.3;
+    /* opacity: 0.3; */
     top: 0 !important;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 .movie-nav {
+    position: relative;
+    z-index: 2 !important;
     top:0;
     left: 0;
     right: 0;
@@ -57,4 +70,37 @@ body {
 
 .account-card {
     background-color:rgb(31, 31, 31) !important;
+}
+
+.myc-color {
+    color: #39CCCC;
+}
+.poster-img {
+    object-fit: cover;
+    height: 360px;
+}
+
+.img-hover-zoom {
+    height: 300px;
+    overflow: hidden;
+    background-color:rgb(31, 31, 31) !important;
+  }
+  
+.img-hover-zoom img {
+    transition: transform .5s ease;
+}
+
+.img-hover-zoom:hover{
+    cursor: pointer;
+}
+.img-hover-zoom:hover img {
+    transform: scale(1.5);
+    opacity: 0.4;   
+}
+.img-hover-zoom div {
+    visibility: hidden;
+}
+.img-hover-zoom:hover div {
+    visibility: visible;
+    font-size: 30px;
 }

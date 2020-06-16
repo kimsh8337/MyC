@@ -10,7 +10,8 @@
           </button>
         </div>
         <div class="modal-body">
-          <form action="{% url 'movies:rating_update' movie.id rating.id %}" method="POST">
+          {{ rating.id }}
+          <form action="" method="POST" class="edit-form">
               {% csrf_token %}
               {% bootstrap_form form %}
               <div class="modal-footer">

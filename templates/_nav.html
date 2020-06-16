@@ -1,6 +1,6 @@
 {% load gravatar %}
 <nav class="movie-nav navbar navbar-dark navbar-expand-lg fixed-top url-check" id="{{ request.resolver_match.url_name }}">
-    <a class="navbar-brand js-scroll-trigger text-white font-weight-bold mx-5" href="{% url 'movies:index' %}"><h4 class='logo'>MyC</h4></a>
+    <a class="navbar-brand js-scroll-trigger text-white font-weight-bold mx-5 py-3" href="{% url 'movies:index' %}"><h3 class='logo myc-color'>MyC</h3></a>
     <button class="navbar-toggler navbar-toggler-right text-white" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -50,14 +50,14 @@
 <script>
     const urlCheck = document.querySelector('.url-check').id
     const navBar = document.querySelector('.movie-nav')
-    if (urlCheck === 'genre'){
-      navBar.style.backgroundColor = 'rgb(31, 31, 31)'
+    if (urlCheck === 'movie_detail' | urlCheck === 'index' | urlCheck === 'rating_update' | urlCheck==='None'){
+      navBar.style.backgroundColor = ''
       navBar.style.display = ''
     } else if (urlCheck ==='login' | urlCheck ==='signup') {
       navBar.style.display = 'none'
     }
     else {
-      navBar.style.backgroundColor = ''
+      navBar.style.backgroundColor = 'rgb(31, 31, 31)'
       navBar.style.display = ''
     }
     console.log(urlCheck)

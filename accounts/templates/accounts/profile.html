@@ -1,7 +1,14 @@
 {% extends 'base.html' %}
 {% load bootstrap4 %}
 {% load gravatar %}
+{% load static %}
+{% block title %}@{{ user.username }}{% endblock %}
+{% block css %}
+    <link rel="stylesheet" href="{% static '/accounts/stylesheets/profile.css' %}">
+{% endblock %}
+
 {% block content %}
+<<<<<<< HEAD
 <div class="d-flex justify-content-center">
     <div class="mt-5 mx-5" style="width: 45rem;">
         <img class="avatar float-right" src="{{ user.email|profile_url }}?s=120">
@@ -34,13 +41,106 @@
                 <div class="row justify-content-between">
                             <div class="col-4">
                             {{ post.like_users.count }} like · {{ post.comment_set.count }} comments
-                            </div>
-                            <span class="col-4 text-right">
-                            {{ post.created_at|date:"Y-m-d H:i" }}
-                            </span>
-                        </div>
+=======
+<div class="container">
+    <div class="profile-wrapper-1">
+        <div class="d-flex justify-content-center mb-4">
+            <div class="mx-5 my-4" style="width: 45rem;">
+                <img class="avatar float-left" src="{{ user.email|profile_url }}?s=150">
+                <div class="text-right">
+                    {% with user_followers=user.followers.all %}
+                    <div>
+                        {% if request.user != user %}
+                            {% if request.user in user_followers %}
+                                <a href="{% url 'accounts:follow' user.pk %}" type="button" class="btn btn-success btn-sm mr-2"
+                                    style="margin-bottom: 9px;">
+                                    <i class="fas fa-user-minus mr-2"></i>following</a>
+                            {% else %}
+                                <a href="{% url 'accounts:follow' user.pk %}" type="button" class="btn btn-outline-success btn-sm mr-2"
+                                    style="margin-bottom: 9px;">
+                                    <i class="fas fa-user-plus mr-2"></i>follow</a>
+                            {% endif %}
+                        {% endif %}
+                        <h2 class="font-weight-bold d-inline"><i class="fas fa-baby mr-2"></i>{{ user.username }}</h2>
+                    </div>
+                    <p class='myc-color'>MyCinema <span class="text-secondary">member since {{ user.date_joined|date:"Y M"}}</span></p>
+                    <p><i class="fas fa-at"></i> {{ user.email }}</p>
+                    <div></div>                 
+                    <p>{{ user.followings.count }} Following · {{ user_followers|length }} Followers · Level <span class="myc-color">{{ user.level }}</span></p>
+                    {% endwith %}
                 </div>
             </div>
+        </div>
+        <div class="mt-5">
+            <h5 class="mb-3 mr-4 d-inline select-post select-menu-button" style="color: #39CCCC;">My Post {{ post_cnt }}</h5>
+            <h5 class="mb-3 mr-4 d-inline select-saved select-menu-button">Saved Movies {{ saved_cnt }}</h5>
+            <h5 class="mb-3 mr-4 d-inline select-watched select-menu-button">Watched Movies {{ watched_cnt }}</h5>
+        </div>
+        <hr class="border-bottom-1 border-white">
+        <div class="profile-wrapper-2">
+            <div class="post-inner">
+                <div class="row justify-content-center">
+                    {% for post in posts %}
+                            <div class="col-12 col-sm-12 col-md-6 card-deck">
+                                <div class="card mb-3 bg-dark profile-post" style="width: 28rem;"
+                                onclick="location.href=`{% url 'posts:post_detail' post.id %}`">
+                                    <div class="card-body">
+                                    <h5 class="font-italic">{{ post.movie }}</h5>
+                                    <h3 class="card-title mt-3">{{ post.title }}</h3>
+                                    <p class="card-text text-muted">{{ post.content|slice:":45" }}...</p>
+                                    <div class="row justify-content-between">
+                                                <div class="col-4">
+                                                {{ post.like_users.count }} like · {{ post.comment_set.count }} comments
+                                                </div>
+                                                <span class="col-4 text-right">
+                                                {{ post.created_at|date:"Y-m-d H:i" }}
+                                                </span>
+                                            </div>
+                                    </div>
+                                </div>
+                            </div>
+                    {% empty %}
+                        <p class="text-secondary">아직 작성한 글이 없습니다! 첫 글을 작성해 보세요 :)</p>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="saved-inner" style="display: none;">
+                <div class="row justify-content-center">
+                    {% for movie in saved %}
+                        <div class="col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3 card-deck movie-all" id="movie-{{ movie.id }}">
+                            <div class="card border-0 m-3 text-center img-hover-zoom" style="width: 18rem;"
+                                onclick="location.href=`{% url 'movies:movie_detail' movie.pk %}`">
+                                {% if movie.poster_path %}
+                                <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" 
+                                    class="mw-100 poster-img" alt="Movie Poster">
+                                {% else %}
+                                    <img src="https://media.comicbook.com/files/img/default-movie.png" 
+                                    class="mw-100 poster-img" alt="Movie Poster">
+                                {% endif %}
+                                <div class="card-img-overlay">
+                                    <p>{{ movie.title }}</p>
+                                    <p>
+                                        {% if user in movie.selected_users.all %}
+                                            <i class="fas fa-bookmark mx-2 select-button" style="color:blue" data-movie-pk="{{ movie.pk }}"></i>
+                                        {% else %}
+                                            <i class="fas fa-bookmark mx-2 select-button" style="color:yellow" data-movie-pk="{{ movie.pk }}"></i>
+                                        {% endif %}
+                                        {% if user in movie.selected_users.all %}
+                                            <i class="fas fa-eye mx-2 watch-button" style="color:crimson" data-movie-pk="{{ movie.pk }}"></i>
+                                        {% else %}
+                                            <i class="fas fa-eye mx-2 watch-button" style="color:white" data-movie-pk="{{ movie.pk }}"></i>
+                                        {% endif %}
+                                        <!-- <i class="far fa-bookmark mx-2 select-button"></i>
+                                        <i class="far fa-eye mx-2 select-button"></i> -->
+                                    </p>
+                                </div>
+>>>>>>> 3529c33202d5832a7815dd47001c5b587cd8580b
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+<<<<<<< HEAD
         {% empty %}
             <p class="text-secondary">아직 작성한 글이 없습니다! 첫 글을 작성해 보세요 :)</p>
         {% endfor %}
@@ -60,7 +160,113 @@
             {% empty %}
                 <p class="text-secondary">아직 찜한 영화가 없습니다 :)</p>
             {% endfor %}
+=======
+            <div class="watched-inner" style="display: none;">
+                <div class="row justify-content-center">
+                    {% for movie in watched %}
+                        <div class="col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3 card-deck movie-all" id="movie-{{ movie.id }}">
+                            <div class="card border-0 m-3 text-center img-hover-zoom" style="width: 18rem;"
+                                onclick="location.href=`{% url 'movies:movie_detail' movie.pk %}`">
+                                {% if movie.poster_path %}
+                                <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" 
+                                    class="mw-100 poster-img" alt="Movie Poster">
+                                {% else %}
+                                    <img src="https://media.comicbook.com/files/img/default-movie.png" 
+                                    class="mw-100 poster-img" alt="Movie Poster">
+                                {% endif %}
+                                <div class="card-img-overlay">
+                                    <p>{{ movie.title }}</p>
+                                    <p>
+                                        <i class="far fa-bookmark mx-2" data-toggle="tooltip" data-placement="top" title="Tooltip on top"></i>
+                                        <i class="far fa-eye mx-2"></i>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+>>>>>>> 3529c33202d5832a7815dd47001c5b587cd8580b
         </div>
+    </div>
 </div>
+<<<<<<< HEAD
 {% include 'movies/movie_select.html' %}
+=======
+
+<script>
+    const selectPostButton = document.querySelector('.select-post');
+    const selectSavedButton = document.querySelector('.select-saved');
+    const selectWatchedButton = document.querySelector('.select-watched');
+
+    const postInner = document.querySelector('.post-inner');
+    const savedInner = document.querySelector('.saved-inner');
+    const watchedInner = document.querySelector('.watched-inner');
+
+    selectSavedButton.addEventListener('click', function(event){
+        selectPostButton.style.color = ''
+        selectWatchedButton.style.color = ''
+        selectSavedButton.style.color = '#39CCCC'
+
+        postInner.style.display = 'none'
+        watchedInner.style.display = 'none'
+        savedInner.style.display = '' 
+        });
+    selectWatchedButton.addEventListener('click', function(event){
+        selectPostButton.style.color = ''
+        selectSavedButton.style.color = ''
+        selectWatchedButton.style.color = '#39CCCC'
+        
+        postInner.style.display = 'none'
+        savedInner.style.display = 'none'
+        watchedInner.style.display = '' 
+    });
+    selectPostButton.addEventListener('click', function(event){
+        selectWatchedButton.style.color = ''
+        selectSavedButton.style.color = ''
+        selectPostButton.style.color = '#39CCCC'
+
+        savedInner.style.display = 'none'
+        watchedInner.style.display = 'none'
+        postInner.style.display = ''
+    });
+
+    const selectButtons = document.querySelectorAll('.select-button');
+    selectButtons.forEach(function(selectButton){
+        selectButton.addEventListener('click', function(event){
+        const moviePk = event.target.dataset.moviePk
+        const countInfo = document.querySelector(`#select-count-${moviePk}`)
+        axios.get(`/movies/${moviePk}/selected`)
+            .then(function(response){
+            const count = response.data.count
+            const select = response.data.select
+            if (select){
+                event.target.style.color = "crimson"
+            }else{
+                event.target.style.color = "black"
+            }
+            countInfo.innerText = `${count}`
+            });
+        });
+    });
+    const watchButtons = document.querySelectorAll('.watch-button');
+    watchButtons.forEach(function(watchButton){
+        watchButton.addEventListener('click', function(event){
+        const moviePk = event.target.dataset.moviePk
+        const countInfo = document.querySelector(`#watch-count-${moviePk}`)
+        axios.get(`/movies/${moviePk}/watched`)
+            .then(function(response){
+            const count = response.data.count
+            const watch = response.data.watch
+            if (watch){
+                event.target.style.color = "crimson"
+            }else{
+                event.target.style.color = "black"
+            }
+            countInfo.innerText = `${count}`
+            });
+        });
+    });
+</script>
+>>>>>>> 3529c33202d5832a7815dd47001c5b587cd8580b
 {% endblock %}
