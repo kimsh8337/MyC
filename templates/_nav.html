@@ -50,14 +50,14 @@
 <script>
     const urlCheck = document.querySelector('.url-check').id
     const navBar = document.querySelector('.movie-nav')
-    if (urlCheck === 'genre' | urlCheck === 'profile'){
-      navBar.style.backgroundColor = 'rgb(31, 31, 31)'
+    if (urlCheck === 'movie_detail' | urlCheck === 'index' | urlCheck === 'rating_update' | urlCheck==='None'){
+      navBar.style.backgroundColor = ''
       navBar.style.display = ''
     } else if (urlCheck ==='login' | urlCheck ==='signup') {
       navBar.style.display = 'none'
     }
     else {
-      navBar.style.backgroundColor = ''
+      navBar.style.backgroundColor = 'rgb(31, 31, 31)'
       navBar.style.display = ''
     }
     console.log(urlCheck)

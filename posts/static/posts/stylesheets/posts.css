@@ -36,8 +36,3 @@
 .card-hover-zoom div{
     position: relative;
 }
-
-.card-body{
-    height: 40rem;
-    max-height: 100%;
-}

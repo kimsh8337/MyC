@@ -27,7 +27,7 @@ body {
     background-size: cover;
     position: relative;
     background-position: center top;
-    opacity: 0.3;
+    /* opacity: 0.3; */
     top: 0 !important;
     display: flex;
     justify-content: center;

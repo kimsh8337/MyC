@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 {% load bootstrap4 %}
 {% load static %}
-{% load bootstrap_pagination %}
 {% block title %}Home{% endblock %}
 {% block css %}
     <link rel="stylesheet" href="{% static '/movies/stylesheets/movies.css' %}">
@@ -17,16 +16,17 @@
     </ol> -->
     <div class="carousel-inner">
       <div class="carousel-item active">
-        <div>
-          <img src="https://image.tmdb.org/t/p/original/{{ movie_top.backdrop_path }}" class="d-block w-100" alt="...">
+        <div >
+          <h1 class="tag tag-title">{{ movie_top.title }}</h1>
+          <img src="https://image.tmdb.org/t/p/original/{{ movie_top.backdrop_path }}" 
+            class="carousel-main-img d-block w-100" alt="backdrop img">
         </div>
       </div>
       {% for movie_c in movies_top3 %}
         <div class="carousel-item">
-          <div>
-            <div class="tag">{{ movie_c.title}}</div>
-            <img src="https://image.tmdb.org/t/p/original/{{ movie_c.backdrop_path }}" class="d-block w-100" alt="...">
-          </div>
+            <h1 class="tag tag-title">{{ movie_c.title }}</h1>
+            <img src="https://image.tmdb.org/t/p/original/{{ movie_c.backdrop_path }}" 
+              class="carousel-main-img d-block w-100" alt="backdrop img">
         </div>
       {% endfor %}
 
@@ -41,15 +41,50 @@
   </div> 
   <div class="container p-5">
     <h1>Hello</h1>
-    <h5>Saved</h5>
-    {% for saved_movie in saved %}
-      <p>{{ saved_movie.title }}</p>
-    {% empty %}
-    <p>아직 저장한 영화가 없거나 모든 영화를 다 보았습니다!</p>
-    {% endfor %}
+    <p>{{ saved_cnt }}</p>
+    {% if saved_cnt != 0 %}
+      <h3>{{ request.user.username }}님이 아직 안보신 영화들입니다!</h3>
+      <div id="gallery" class="carousel slide" data-ride="carousel">
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <div class="row">
+                  {% for movie in saved_top_a %}
+                    <div class="col text-center img-hover-zoom">
+                      <img class="img-fluid" style="height: 270px;"
+                        src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" alt="Image Poster"/>
+                        <!-- <figcaption class="float-left" style="position: absolute;">{{ movie.title }}</figcaption> -->
+                    </div>
+                  {% endfor %}
+                </div>
+            </div>
+            {% if saved_cnt > 5 %}
+              <div class="carousel-item">
+                  <div class="row">
+                    {% for movie in saved_top_b %}
+                      <div class="col text-center img-hover-zoom">
+                          <img class="img-fluid" style="height: 270px;" 
+                            src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" alt="Image 6"/>
+                      </div>
+                    {% endfor %}
+                  </div>
+              </div>
+            {% endif %}
+        
+          </div>
 
-    <p></p>
-    <p>{{ movies_top3 }}</p>
+        <a class="carousel-control-prev" style="width: 20px;" href="#gallery" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+
+        <a class="carousel-control-next" style="width: 20px;" href="#gallery" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+        </a>
+    </div>
+  {% endif %}
+
+
   </div>  
     <!-- select, watch -->
     {% include 'movies/movie_select.html' %}

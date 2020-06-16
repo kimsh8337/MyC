@@ -2,7 +2,12 @@
     margin-top: 120px;
 }
 
-.select-button:hover {
+.select-menu-button:hover {
     color: #39CCCC;
     cursor: pointer;
+}
+
+.profile-post:hover {
+    cursor: pointer;
+    opacity: 0.3;
 }

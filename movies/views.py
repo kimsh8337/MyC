@@ -16,6 +16,7 @@ def index(request):
     user_selected = []
     user_watched = []
     saved_unseen = []
+    saved_cnt = 0
 
     if request.user.is_authenticated:
         # 사용자가 찜한 영화
@@ -52,11 +53,18 @@ def index(request):
         print(user_selected)
         print(saved_unseen)
 
+        if len(saved_unseen) > 10:
+            saved_cnt = 10
+        else:
+            saved_cnt = len(saved_unseen)
+
     # 3. 찜한 목록 중 기준 추천
     context = {
         'movie_top': movies[0],
         'movies_top3': movies[1:4],
-        'saved' : saved_unseen,
+        'saved_top_a' : saved_unseen[:5],
+        'saved_top_b' : saved_unseen[6:],
+        'saved_cnt': saved_cnt,
     }
     return render(request, 'movies/index.html', context)
 
