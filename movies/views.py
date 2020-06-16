@@ -17,6 +17,7 @@ def index(request):
     user_watched = []
     saved_unseen = []
     saved_cnt = 0
+    ratings = []
 
     if request.user.is_authenticated:
         # 사용자가 찜한 영화
@@ -25,20 +26,27 @@ def index(request):
         # 찜한 영화 1개 이상이 아니면 보이지 않게
 
         # 사용자가 본 영화
-        
         watched_movies = request.user.watched_movies.all()
         for movie in watched_movies:
             user_watched.append(movie)
         
         # 1. 찜했는데 안본영화 나열
-        
         for movie in selected_movies:
             if movie not in watched_movies:
                 saved_unseen.append(movie)
 
         # 2. 찜한 정보를 바탕으로 장르 추천
         user_genres = {}
+        user_point = {}
         for movie in selected_movies:
+            ratings = movie.rating_set.all()
+            if ratings:
+                for rating in ratings:
+                    tmp = rating.standard
+                    if tmp not in user_point:
+                        user_point[tmp] = 1
+                    else:
+                        user_point[tmp] += 1
             user_selected.append(movie)
             tmp = movie.genre_ids.all()
             key = tmp[0].name
@@ -46,17 +54,27 @@ def index(request):
                 user_genres[key] = 1
             else:
                 user_genres[key] += 1
-        # 모두 15개 영화가 나올때 까지 while 반복
+        # 모두 10개 영화가 나올때 까지 while 반복
         
-        print(user_genres)
-        print(user_watched)
-        print(user_selected)
-        print(saved_unseen)
-
         if len(saved_unseen) > 10:
             saved_cnt = 10
         else:
             saved_cnt = len(saved_unseen)
+        user_liked = []
+        user_hated = []
+
+        for movie in user_watched:
+            ratings = movie.rating_set.all()
+            if tmp:
+                for rating in ratings:
+                    if request.user == rating.user:
+                        if rating.rank == 1:
+                            user_liked.append(rating.movie)
+                        else:
+                            user_hated.append(rating.movie)
+
+        print(user_liked)
+        print(user_hated)
 
     # 3. 찜한 목록 중 기준 추천
     context = {

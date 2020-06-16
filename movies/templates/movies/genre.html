@@ -7,9 +7,8 @@
 {% endblock %}
 
 {% block content %}
-    <div class="container p-3">
+    <div class="container p-3 genre-div">
         <div class="mt-5 genre-list zindex-sticky">
-            <h3 class="my-4">Genre</h3>
             <h3 class="my-4">Genre</h3>
             {% for genre in genres %}
                 <span class="select-genre genre-button m-2" id="genre-{{ genre.id }}" data-genre-pk="{{ genre.id }}">{{ genre.name }}</span>

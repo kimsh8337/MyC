@@ -25,11 +25,13 @@
     <title>MyC - {% block title%}{% endblock %}</title>
 </head>
 <body>
-    <!-- Message framework -->
-    {% include '_message.html' %}
-    <!-- Navigation -->
-    {% include '_nav.html' %}
-    
+    <div>
+        <!-- Message framework -->
+        {% include '_message.html' %}
+        <!-- Navigation -->
+        {% include '_nav.html' %}
+    </div>
+
     <div>
         {% block content %}
 	    {% endblock %}

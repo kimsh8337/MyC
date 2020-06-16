@@ -5,6 +5,17 @@ body {
     /* font-family: 'Noto Sans KR', sans-serif !important; */
     font-family: 'Do Hyeon', sans-serif !important;
 }
+.messages {
+    position: relative;
+    z-index: 3 !important;
+}
+.carousel-div {
+    z-index: 1 !important;
+}
+.genre-list {
+    z-index: 1 !important;
+}
+
 .background-none {
     background-color:rgb(31, 31, 31) !important;
 }
@@ -34,6 +45,8 @@ body {
     align-items: center;
 }
 .movie-nav {
+    position: relative;
+    z-index: 2 !important;
     top:0;
     left: 0;
     right: 0;
