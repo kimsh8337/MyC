@@ -15,12 +15,33 @@
     float: left;
     position: absolute;
     left: 10%;
-    top: 20%;
+    top: 15%;
     z-index: 1000;
     padding: 5px;
     color: #FFFFFF;
     font-weight: bold;
     
+}
+.tag1{
+    float: left;
+    position: absolute;
+    left: 10%;
+    top: 28%;
+    z-index: 1000;
+    padding: 5px;
+    color: #FFFFFF;
+    font-size: 1.4rem;
+    width: 43rem;
+}
+
+.tag2{
+    float: left;
+    position: absolute;
+    left: 9.5%;
+    top: 21%;
+    z-index: 1000;
+    padding: 5px;
+    font-size: 1.5rem;
 }
 .tag-title {
     font-size: 95px;

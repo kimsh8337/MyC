@@ -32,12 +32,13 @@
     </a>
   </div> 
   <div class="container p-5">
-    <h1>Hello</h1>
+    {% if request.user.is_authenticated %}
+      <h1>Hello</h1>
+    {% else %}
+      <h1>로그인 해주세요</h1>
+    {% endif %}
     {% include 'movies/_recommend_saved.html' %}
-    {% include 'movies/_recommend_genre.html' %}
-
-
-
+    {% include 'movies/_recommend_topten.html' %}
   </div>  
     <!-- select, watch -->
     {% include 'movies/movie_select.html' %}
