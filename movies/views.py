@@ -99,19 +99,20 @@ def index(request):
                         lang_dict[lang] = 1
                     else:
                         lang_dict[lang] += 1 
-                lang_sorted = sorted(lang_dict.items(), key=lambda x: x[1], reverse=True)
-                for i in range(3):
-                    if i >= len(lang_sorted):
-                        num = 0
-                    else:
-                        num = i
-                    movie_rec = Movie.objects.filter(original_language=lang_sorted[num][0]).order_by('?')[0]
-                    if movie_rec in saved_unseen or movie_rec in user_watched:
-                        continue
-                    if movie_rec in user_liked or movie_rec in user_hated:
-                        continue
-                    final_rec.append(movie_rec)
-                    cnt += 1
+                if len(lang_sorted):
+                    lang_sorted = sorted(lang_dict.items(), key=lambda x: x[1], reverse=True)
+                    for i in range(3):
+                        if i >= len(lang_sorted):
+                            num = 0
+                        else:
+                            num = i
+                        movie_rec = Movie.objects.filter(original_language=lang_sorted[num][0]).order_by('?')[0]
+                        if movie_rec in saved_unseen or movie_rec in user_watched:
+                            continue
+                        if movie_rec in user_liked or movie_rec in user_hated:
+                            continue
+                        final_rec.append(movie_rec)
+                        cnt += 1
                 # 사용자가 저장한 영화 기준 장르 추천
                 for movie in user_selected:
                     movie_genres = movie.genre_ids.all()
