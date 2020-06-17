@@ -16,11 +16,11 @@
             <a class="nav-link text-white" href="{% url 'posts:post_list' %}">Community</a>
           </li>
           {% if request.user.is_authenticated %}
-            {% if request.resolver_match.url_name == 'post_list' %}
+            <!-- {% if request.resolver_match.url_name == 'post_list' %}
               <li class="nav-item">
                 <a class="nav-link text-white" href="#">New</a>
               </li>
-            {% endif %}
+            {% endif %} -->
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <img class="avatar" src="{{ request.user.email|profile_url }}?s=30">

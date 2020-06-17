@@ -2,6 +2,7 @@
 {% load bootstrap4 %}
 {% block title %}{{ movie.title }}{% endblock %}
 {% load static %}
+{% load gravatar %}
 {% block css %}
     <link rel="stylesheet" href="{% static '/movies/stylesheets/movies.css' %}">
 {% endblock %}
@@ -38,58 +39,77 @@
   </div>
 
     <div class="container p-5">
-        <div>MyC 사용자 의견</div>
-        <div class="progress" style="height: 20px; width:500px" >
-            {% if sum_rank == 0 %}
-                <div class="progress-bar bg-dark progress-bar-striped progress-bar-animated" 
-                    role="progressbar" style="width: 100%" aria-valuenow="20" 
-                    aria-valuemin="0" aria-valuemax="100">아직 정보가 없습니다!</div>
-            {% else %}
-                <div class="progress-bar progress-bar-striped progress-bar-animated" 
-                    role="progressbar" style="width: {{ rank_per.0|floatformat }}%" aria-valuenow="15" 
-                    aria-valuemin="0" aria-valuemax="100">좋아요 {{ rank_per.0|floatformat }}%</div>
-                <div class="progress-bar bg-danger progress-bar-striped progress-bar-animated" 
-                    role="progressbar" style="width: {{ rank_per.1|floatformat }}%" aria-valuenow="20" 
-                    aria-valuemin="0" aria-valuemax="100">싫어요 {{ rank_per.1|floatformat }}%</div>
-            {% endif %}
+        <div class="d-flex justify-content-between">
+        <div>
+            <h3>MyC 사용자 기준 <span class="text-primary">{{ rank_per.0|floatformat }}%</span> 가 좋아하는 영화입니다.</h3>
+            <div>MyC 사용자 의견</div>
+            {% include 'movies/_progressbar.html' %}
         </div>
-        <div style="text-align: right;">
+        <div style="text-align: right;" class="mt-auto">
             <button type="button" class="btn btn-outline-light form-check" value="{{ request.resolver_match.url_name }}"
                 data-toggle="modal" data-target="#commentCreate"><i class="fas fa-thumbs-up"></i> 의견 남기기</button>
             <a type="button" class="btn btn-outline-light form-check" 
                 href="{% url 'posts:post_create' movie.id %}"><i class="fas fa-pen"></i> 포스트 작성</a>
         </div>
+        </div>
         {% include 'movies/comment_create.html' %}
         <hr>
-        {% for rating in ratings %}
-        {% if rating.rank == 1 %}
-            <div class="card border-success mb-3 background-none">
-                <div class="card-body">
-                <blockquote class="blockquote mb-0">
-                    <p><i class="far fa-thumbs-up text-success"></i> {{ rating.content }}</p>
-                </blockquote>
-                </div>
+            <div class="row d-flex justify-content-left">
+                {% for rating in ratings %}
+                        <div class="col-12 col-sm-12 col-md-6 card-deck">
+                            <div class="card mb-3 bg-dark profile-post" style="width: 28rem;">
+                                <div class="card-body">
+                                    <div class="container">
+                                        <div class="row justify-content-between">
+                                            <div>
+                                                <img class="avatar" src="{{ rating.user.email|profile_url }}?s=50">
+                                                <span class="card-title ml-2"><a href="{% url 'accounts:profile' rating.user.id %}">{{ rating.user }}</a></span>
+                                            </div>
+                                            <div>
+                                                {% if rating.standard == 1%}
+                                                    <h6 class="font-italic myc-color">영상미</h6>
+                                                {% elif rating.standard == 2 %}
+                                                    <h6 class="font-italic myc-color">배우연기</h6>
+                                                {% elif rating.standard == 3 %}
+                                                    <h6 class="font-italic myc-color">감독연출</h6>
+                                                {% elif rating.standard == 4 %}
+                                                    <h6 class="font-italic myc-color">스토리</h6>
+                                                {% else %}
+                                                    <h6 class="font-italic myc-color">OST</h6>
+                                                {% endif %}
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% if rating.rank == 1 %}
+                                        <h3 class="card-title mt-3"><i class="far fa-thumbs-up text-primary"></i> {{ rating.content }}</h3>
+                                    {% else %}
+                                        <h3 class="card-title mt-3"><i class="far fa-thumbs-down text-danger"></i> {{ rating.content }}</h3>
+                                    {% endif %}
+                                    <div class="row justify-content-between">
+                                            <div class="col-4">
+                                                {% if request.user == rating.user %}
+                                                    <form class='d-inline' action="{% url 'movies:rating_delete' movie.id rating.id %}" method="POST">
+                                                        {% csrf_token %}
+                                                        <button class="btn btn-dark"><i class="far fa-trash-alt"></i></button>
+                                                    </form>
+                                                    <a type="button" href="{% url 'movies:rating_update' movie.id rating.id %}"
+                                                        class="btn btn-dark">
+                                                        <i class="far fa-edit"></i></a>
+                                                    {% include 'movies/comment_edit.html' %}
+                                                {% endif %}
+                                            </div>
+                                            <span class="col-4 text-right">
+                                            {{ rating.created_at|date:"Y-m-d H:i" }}
+                                            </span>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+                {% empty %}
+                    <p class="text-secondary">아직 작성한 글이 없습니다! 첫 글을 작성해 보세요 :)</p>
+                {% endfor %}
             </div>
-        {% else %}
-            <div class="card border-danger mb-3 background-none">
-                <div class="card-body">
-                <blockquote class="blockquote mb-0">
-                    <p><i class="far fa-thumbs-down text-danger"></i> {{ rating.content }}</p>
-                </blockquote>
-                </div>
-            </div>
-        {% endif %}
-        {% if request.user == rating.user %}
-                <form class='d-inline' action="{% url 'movies:rating_delete' movie.id rating.id %}" method="POST">
-                    {% csrf_token %}
-                    <button><i class="far fa-trash-alt"></i></button>
-                </form>
-                <a type="button" href="{% url 'movies:rating_update' movie.id rating.id %}"
-                    class="btn btn-dark">
-                        수정</a> {{ rating.id }}
-                {% include 'movies/comment_edit.html' %}
-        {% endif %}
-    {% endfor %}
     <script>
         const formCheck = document.querySelector('.form-check').value
         console.log(formCheck)
