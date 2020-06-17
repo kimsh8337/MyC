@@ -6,7 +6,7 @@
               <div class="carousel-item active">
                   <div class="row">
                     {% for movie in final_top_a %}
-                      <div class="col text-center img-hover-zoom">
+                      <div class="col text-center img-hover-zoom" id="movie-{{ movie.id }}" onclick="goDetail(event, `{% url 'movies:movie_detail' movie.pk %}`)">
                         <img class="img-fluid" style="height: 270px;"
                           src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" alt="Image Poster"/>
                       </div>
@@ -16,7 +16,7 @@
               <div class="carousel-item">
                   <div class="row">
                     {% for movie in final_top_b %}
-                      <div class="col text-center img-hover-zoom">
+                      <div class="col text-center img-hover-zoom" id="movie-{{ movie.id }}" onclick="goDetail(event, `{% url 'movies:movie_detail' movie.pk %}`)">
                           <img class="img-fluid" style="height: 270px;" 
                             src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" alt="Image 6"/>
                       </div>
@@ -36,3 +36,10 @@
       </div>
   {% endif %}
   </div>
+
+  <script>
+    function goDetail(event, url) {
+      console.log('div')
+      window.location.href = url;
+    }
+  </script>
