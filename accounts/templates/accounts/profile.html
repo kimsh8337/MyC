@@ -49,7 +49,7 @@
                     {% for post in posts %}
                             <div class="col-12 col-sm-12 col-md-6 card-deck">
                                 <div class="card mb-3 bg-dark profile-post" style="width: 28rem;"
-                                onclick="location.href=`{% url 'posts:post_detail' post.id %}`">
+                                    onclick="location.href=`{% url 'posts:post_detail' post.id %}`">
                                     <div class="card-body">
                                     <h5 class="font-italic">{{ post.movie }}</h5>
                                     <h3 class="card-title mt-3">{{ post.title }}</h3>
@@ -75,7 +75,7 @@
                     {% for movie in saved %}
                         <div class="col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3 card-deck movie-all" id="movie-{{ movie.id }}">
                             <div class="card border-0 m-3 text-center img-hover-zoom" style="width: 18rem;"
-                                onclick="location.href=`{% url 'movies:movie_detail' movie.pk %}`">
+                                onclick="goDetail(event, `{% url 'movies:movie_detail' movie.pk %}`)">
                                 {% if movie.poster_path %}
                                 <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" 
                                     class="mw-100 poster-img" alt="Movie Poster">
@@ -85,20 +85,20 @@
                                 {% endif %}
                                 <div class="card-img-overlay">
                                     <p>{{ movie.title }}</p>
-                                    <p>
-                                        {% if user in movie.selected_users.all %}
-                                            <i class="fas fa-bookmark mx-2 select-button" style="color:blue" data-movie-pk="{{ movie.pk }}"></i>
-                                        {% else %}
-                                            <i class="fas fa-bookmark mx-2 select-button" style="color:yellow" data-movie-pk="{{ movie.pk }}"></i>
-                                        {% endif %}
-                                        {% if user in movie.selected_users.all %}
-                                            <i class="fas fa-eye mx-2 watch-button" style="color:crimson" data-movie-pk="{{ movie.pk }}"></i>
-                                        {% else %}
-                                            <i class="fas fa-eye mx-2 watch-button" style="color:white" data-movie-pk="{{ movie.pk }}"></i>
-                                        {% endif %}
-                                        <!-- <i class="far fa-bookmark mx-2 select-button"></i>
-                                        <i class="far fa-eye mx-2 select-button"></i> -->
-                                    </p>
+                                    {% if request.user == user %}
+                                        <p>
+                                            {% if user in movie.selected_users.all %}
+                                                <i class="fas fa-bookmark mx-2 select-button" style="color:#39CCCC" data-movie-pk="{{ movie.pk }}"></i>
+                                            {% else %}
+                                                <i class="fas fa-bookmark mx-2 select-button" style="color:white" data-movie-pk="{{ movie.pk }}"></i>
+                                            {% endif %}
+                                            {% if user in movie.selected_users.all %}
+                                                <i class="fas fa-eye mx-2 watch-button" style="color:#39CCCC" data-movie-pk="{{ movie.pk }}"></i>
+                                            {% else %}
+                                                <i class="fas fa-eye mx-2 watch-button" style="color:white" data-movie-pk="{{ movie.pk }}"></i>
+                                            {% endif %}
+                                        </p>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
@@ -110,7 +110,7 @@
                     {% for movie in watched %}
                         <div class="col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3 card-deck movie-all" id="movie-{{ movie.id }}">
                             <div class="card border-0 m-3 text-center img-hover-zoom" style="width: 18rem;"
-                                onclick="location.href=`{% url 'movies:movie_detail' movie.pk %}`">
+                                onclick="goDetail(event, `{% url 'movies:movie_detail' movie.pk %}`)">
                                 {% if movie.poster_path %}
                                 <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" 
                                     class="mw-100 poster-img" alt="Movie Poster">
@@ -121,7 +121,7 @@
                                 <div class="card-img-overlay">
                                     <p>{{ movie.title }}</p>
                                     <p>
-                                        <i class="far fa-bookmark mx-2" data-toggle="tooltip" data-placement="top" title="Tooltip on top"></i>
+                                        <i class="far fa-bookmark mx-2"></i>
                                         <i class="far fa-eye mx-2"></i>
                                     </p>
                                 </div>
@@ -171,40 +171,42 @@
         postInner.style.display = ''
     });
 
-    const selectButtons = document.querySelectorAll('.select-button');
-    selectButtons.forEach(function(selectButton){
-        selectButton.addEventListener('click', function(event){
-        const moviePk = event.target.dataset.moviePk
-        const countInfo = document.querySelector(`#select-count-${moviePk}`)
-        axios.get(`/movies/${moviePk}/selected`)
-            .then(function(response){
-            const count = response.data.count
-            const select = response.data.select
-            if (select){
-                event.target.style.color = "crimson"
-            }else{
-                event.target.style.color = "black"
-            }
-            countInfo.innerText = `${count}`
-            });
+    function goDetail(event, url) {
+            window.location.href = url;
+        }
+
+        const selectButtons = document.querySelectorAll('.select-button');
+        selectButtons.forEach(function(selectButton){
+            selectButton.addEventListener('click', function(event){
+                event.stopPropagation();
+                const moviePk = event.target.dataset.moviePk
+                axios.get(`/movies/${moviePk}/selected`)
+                    .then(function(response){
+                    const count = response.data.count
+                    const select = response.data.select
+                    if (select){
+                        event.target.style.color = "#39CCCC"
+                    }else{
+                        event.target.style.color = "white"
+                    }
+                    });
         });
     });
     const watchButtons = document.querySelectorAll('.watch-button');
     watchButtons.forEach(function(watchButton){
         watchButton.addEventListener('click', function(event){
-        const moviePk = event.target.dataset.moviePk
-        const countInfo = document.querySelector(`#watch-count-${moviePk}`)
-        axios.get(`/movies/${moviePk}/watched`)
-            .then(function(response){
-            const count = response.data.count
-            const watch = response.data.watch
-            if (watch){
-                event.target.style.color = "crimson"
-            }else{
-                event.target.style.color = "black"
-            }
-            countInfo.innerText = `${count}`
-            });
+            event.stopPropagation();
+            const moviePk = event.target.dataset.moviePk
+            axios.get(`/movies/${moviePk}/watched`)
+                .then(function(response){
+                const count = response.data.count
+                const watch = response.data.watch
+                if (watch){
+                    event.target.style.color = "#39CCCC"
+                }else{
+                    event.target.style.color = "white"
+                }
+            }); 
         });
     });
 </script>

@@ -36,18 +36,17 @@ def index(request):
                 if movie not in watched_movies:
                     saved_unseen.append(movie)
 
-            user_genres = {}
-            user_point = {}
-            for movie in selected_movies:
-                ratings = movie.rating_set.all()
-                if ratings:
-                    for rating in ratings:
-                        tmp = rating.standard
-                        if tmp not in user_point:
-                            user_point[tmp] = 1
-                        else:
-                            user_point[tmp] += 1
-                user_selected.append(movie)
+            # user_genres = {}
+            # user_point = {}
+            # for movie in selected_movies:
+            #     ratings = movie.rating_set.all()
+            #     if ratings:
+            #         for rating in ratings:
+            #             tmp = rating.standard
+            #             if tmp not in user_point:
+            #                 user_point[tmp] = 1
+            #             else:
+            #                 user_point[tmp] += 1
                 
             if len(saved_unseen) > 10:
                 saved_cnt = 10
@@ -59,7 +58,7 @@ def index(request):
 
             for movie in user_watched:
                 ratings = movie.rating_set.all()
-                if tmp:
+                if ratings:
                     for rating in ratings:
                         if request.user == rating.user:
                             if rating.rank == 1:
@@ -208,7 +207,7 @@ def movie_detail(request, movie_pk):
     print(movie_rank)
     for j in range(5):
         if movie_point[j] != 0:
-            point_per[j] = movie_point[j] / sum(movie_point) * 100
+            point_per[j] = round(movie_point[j] / sum(movie_point) * 100)
 
     print(rank_per)
     print(point_per)
@@ -222,6 +221,7 @@ def movie_detail(request, movie_pk):
         'sum_rank': sum(movie_rank),
         'point_per': point_per,
         'sum_point': sum(movie_point),
+        'top_point': point_per.index(max(point_per))
     }
     return render(request, 'movies/movie_detail.html', context)
 
