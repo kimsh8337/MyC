@@ -8,155 +8,175 @@
 {% endblock %}
 
 {% block content %}
+    <!-- Backdrop image -->
     <div id="carouselExampleCaptions" class="carousel slide" data-ride="carousel">
-    <div class="carousel-inner">
-      <div class="carousel-item active">
-        <div>
-          <h1 class="tag">{{ movie.title }}</h1>
-          <p class="tag1">{{ movie.overview }}</p>
-          <p class="tag2">
-            {% if user in movie.selected_users.all %}
-                <i class="fas fa-bookmark mx-2 select-button" style="color:#39CCCC" data-movie-pk="{{ movie.pk }}">
-                    <span id="select-count-{{ movie.pk }}">{{ movie.selected_users.all.count }}</span></i>
-            {% else %}
-                <i class="fas fa-bookmark mx-2 select-button" style="color:white" data-movie-pk="{{ movie.pk }}">
-                    <span id="select-count-{{ movie.pk }}">{{ movie.selected_users.all.count }}</span></i>
-            {% endif %}
-            {% if user in movie.watched_users.all %}
-                <i class="fas fa-eye mx-2 watch-button" style="color:#39CCCC" data-movie-pk="{{ movie.pk }}">
-                    <span id="watch-count-{{ movie.pk }}">{{ movie.watched_users.all.count }}</span></i>
-            {% else %}
-                <i class="fas fa-eye mx-2 watch-button" style="color:white" data-movie-pk="{{ movie.pk }}">
-                    <span id="watch-count-{{ movie.pk }}">{{ movie.watched_users.all.count }}</span></i>
-            {% endif %}
-            {{ movie.release_date }}
-          </p>
-
-          <img src="https://image.tmdb.org/t/p/original/{{ movie.backdrop_path }}" 
-            class="carousel-main-img d-block w-100" alt="backdrop img">
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <div>
+                    <h1 class="tag">{{ movie.title }}</h1>
+                    <p class="tag1">{{ movie.overview }}</p>
+                    <p class="tag2">
+                        {% if user in movie.selected_users.all %}
+                            <i class="fas fa-bookmark mx-2 select-button" style="color:#39CCCC" data-movie-pk="{{ movie.pk }}">
+                                <span id="select-count-{{ movie.pk }}">{{ movie.selected_users.all.count }}</span></i>
+                        {% else %}
+                            <i class="fas fa-bookmark mx-2 select-button" style="color:white" data-movie-pk="{{ movie.pk }}">
+                                <span id="select-count-{{ movie.pk }}">{{ movie.selected_users.all.count }}</span></i>
+                        {% endif %}
+                        {% if user in movie.watched_users.all %}
+                            <i class="fas fa-eye mx-2 watch-button" style="color:#39CCCC" data-movie-pk="{{ movie.pk }}">
+                                <span id="watch-count-{{ movie.pk }}">{{ movie.watched_users.all.count }}</span></i>
+                        {% else %}
+                            <i class="fas fa-eye mx-2 watch-button" style="color:white" data-movie-pk="{{ movie.pk }}">
+                                <span id="watch-count-{{ movie.pk }}">{{ movie.watched_users.all.count }}</span></i>
+                        {% endif %}
+                        {{ movie.release_date }}
+                    </p>
+                    {% if movie.backdrop_path %}
+                        <img src="https://image.tmdb.org/t/p/original/{{ movie.backdrop_path }}" 
+                            class="carousel-main-img d-block w-100" alt="backdrop img">
+                    {% else %}
+                        <img src="https://lh3.googleusercontent.com/proxy/XkgLlyP13mdoRTF0M2OEXW_L_DrqotTZlQv4MWLcwUSx6dF0BbxJbgIWKesa054mL6nmHnuog0zs3ST-j8Vfrlqt4QUpRKHU9v9Ol5We1m-VtY_m8q-uGyAo0uH75huN" 
+                            class="carousel-main-img d-block w-100" alt="backdrop img">
+                    {% endif %}
+                </div>
+            </div>
         </div>
-      </div>
-  </div>
-
+    </div>
+    <!-- Container -->
     <div class="container p-5">
+        <!-- movie detail -->
         <div class="d-flex justify-content-between">
-        <div>
-            <h3>MyC 사용자 기준 <span class="text-primary">{{ rank_per.0|floatformat }}%</span> 가 좋아하는 영화입니다.</h3>
-            <div>MyC 사용자 의견</div>
-            {% include 'movies/_progressbar.html' %}
-        </div>
-        <div style="text-align: right;" class="mt-auto">
-            <button type="button" class="btn btn-outline-light form-check" value="{{ request.resolver_match.url_name }}"
-                data-toggle="modal" data-target="#commentCreate"><i class="fas fa-thumbs-up"></i> 의견 남기기</button>
-            <a type="button" class="btn btn-outline-light form-check" 
-                href="{% url 'posts:post_create' movie.id %}"><i class="fas fa-pen"></i> 포스트 작성</a>
-        </div>
+            <div>
+                <h3><span>MyC</span> 사용자 기준 <span class="text-primary">{{ rank_per.0|floatformat }}%</span> 가 좋아하는 영화입니다.</h3>
+                <div>MyC 사용자 의견</div>
+                {% include 'movies/_progressbar.html' %}
+            </div>
+            {% if request.user.is_authenticated %}
+                <div style="text-align: right;" class="mt-auto">
+                    <button type="button" class="btn btn-outline-light form-check" value="{{ request.resolver_match.url_name }}"
+                        data-toggle="modal" data-target="#commentCreate"><i class="fas fa-thumbs-up"></i> 의견 남기기</button>
+                    <a type="button" class="btn btn-outline-light form-check" 
+                        href="{% url 'posts:post_create' movie.id %}"><i class="fas fa-pen"></i> 포스트 작성</a>
+                </div>
+            {% else %}
+            <div style="text-align: right;" class="mt-auto">로그인 후 의견 및 포스트 작성이 가능합니다.</div>
+            {% endif %}
         </div>
         {% include 'movies/comment_create.html' %}
         <hr>
-            <div class="row d-flex justify-content-left">
-                {% for rating in ratings %}
-                        <div class="col-12 col-sm-12 col-md-6 card-deck">
-                            <div class="card mb-3 bg-dark profile-post" style="width: 28rem;">
-                                <div class="card-body">
-                                    <div class="container">
-                                        <div class="row justify-content-between">
-                                            <div>
-                                                <img class="avatar" src="{{ rating.user.email|profile_url }}?s=50">
-                                                <span class="card-title ml-2"><a href="{% url 'accounts:profile' rating.user.id %}">{{ rating.user }}</a></span>
-                                            </div>
-                                            <div>
-                                                {% if rating.standard == 1%}
-                                                    <h6 class="font-italic myc-color">영상미</h6>
-                                                {% elif rating.standard == 2 %}
-                                                    <h6 class="font-italic myc-color">배우연기</h6>
-                                                {% elif rating.standard == 3 %}
-                                                    <h6 class="font-italic myc-color">감독연출</h6>
-                                                {% elif rating.standard == 4 %}
-                                                    <h6 class="font-italic myc-color">스토리</h6>
-                                                {% else %}
-                                                    <h6 class="font-italic myc-color">OST</h6>
-                                                {% endif %}
+        <!-- movie rating -->
+        <div class="row d-flex justify-content-left">
+            {% for rating in ratings %}
+                    <div class="col-12 col-sm-12 col-md-6 card-deck">
+                        <div class="card mb-3 bg-dark profile-post" style="width: 28rem;">
+                            <div class="card-body">
+                                <div class="container">
+                                    <div class="row justify-content-between">
+                                        <div>
+                                            <img class="avatar" src="{{ rating.user.email|profile_url }}?s=50">
+                                            <span class="card-title ml-2"><a href="{% url 'accounts:profile' rating.user.id %}">{{ rating.user }}</a></span>
+                                        </div>
+                                        <div>
+                                            {% if rating.standard == 1%}
+                                                <h6 class="font-italic myc-color">영상미</h6>
+                                            {% elif rating.standard == 2 %}
+                                                <h6 class="font-italic myc-color">배우연기</h6>
+                                            {% elif rating.standard == 3 %}
+                                                <h6 class="font-italic myc-color">감독연출</h6>
+                                            {% elif rating.standard == 4 %}
+                                                <h6 class="font-italic myc-color">스토리</h6>
+                                            {% else %}
+                                                <h6 class="font-italic myc-color">OST</h6>
+                                            {% endif %}
 
-                                            </div>
                                         </div>
                                     </div>
-                                    {% if rating.rank == 1 %}
-                                        <h3 class="card-title mt-3"><i class="far fa-thumbs-up text-primary"></i> {{ rating.content }}</h3>
-                                    {% else %}
-                                        <h3 class="card-title mt-3"><i class="far fa-thumbs-down text-danger"></i> {{ rating.content }}</h3>
-                                    {% endif %}
-                                    <div class="row justify-content-between">
-                                            <div class="col-4">
-                                                {% if request.user == rating.user %}
-                                                    <form class='d-inline' action="{% url 'movies:rating_delete' movie.id rating.id %}" method="POST">
-                                                        {% csrf_token %}
-                                                        <button class="btn btn-dark"><i class="far fa-trash-alt"></i></button>
-                                                    </form>
-                                                    <a type="button" href="{% url 'movies:rating_update' movie.id rating.id %}"
-                                                        class="btn btn-dark">
-                                                        <i class="far fa-edit"></i></a>
-                                                    {% include 'movies/comment_edit.html' %}
-                                                {% endif %}
-                                            </div>
-                                            <span class="col-4 text-right">
-                                            {{ rating.created_at|date:"Y-m-d H:i" }}
-                                            </span>
                                 </div>
+                                {% if rating.rank == 1 %}
+                                    <h3 class="card-title mt-3"><i class="far fa-thumbs-up text-primary"></i> {{ rating.content }}</h3>
+                                {% else %}
+                                    <h3 class="card-title mt-3"><i class="far fa-thumbs-down text-danger"></i> {{ rating.content }}</h3>
+                                {% endif %}
+                                <div class="row justify-content-between">
+                                    <div class="col-4">
+                                        {% if request.user == rating.user %}
+                                            <form class='d-inline' action="{% url 'movies:rating_delete' movie.id rating.id %}" method="POST">
+                                                {% csrf_token %}
+                                                <button class="btn btn-dark"><i class="far fa-trash-alt"></i></button>
+                                            </form>
+                                            <a type="button" href="{% url 'movies:rating_update' movie.id rating.id %}"
+                                                class="btn btn-dark">
+                                                <i class="far fa-edit"></i></a>
+                                            {% include 'movies/comment_edit.html' %}
+                                        {% endif %}
+                                    </div>
+                                    <span class="col-4 text-right">
+                                        {% if rating.updated_at|date:"Y-m-d H:i s" == rating.created_at|date:"Y-m-d H:i s" %}
+                                            {{ rating.created_at|date:"Y-m-d H:i" }}
+                                        {% else %}
+                                            {{ rating.updated_at|date:"Y-m-d H:i" }} <span>(수정됨)</span>
+                                        {% endif %}
+                                    </span>
                                 </div>
                             </div>
                         </div>
-                {% empty %}
-                    <p class="text-secondary">아직 작성한 글이 없습니다! 첫 글을 작성해 보세요 :)</p>
-                {% endfor %}
-            </div>
-    <script>
-        const formCheck = document.querySelector('.form-check').value
-        console.log(formCheck)
-        if (formCheck !== 'movie_detail'){
-            $(window).load(function () {
-            $('#commentEdit').modal('show');
-        });
-        }
-        const selectButtons = document.querySelectorAll('.select-button');
-        selectButtons.forEach(function (selectButton) {
-            selectButton.addEventListener('click', function (event) {
-                const moviePk = event.target.dataset.moviePk
-                const countInfo = document.querySelector(`#select-count-${moviePk}`)
-                axios.get(`/movies/${moviePk}/selected/`)
-                    .then(function (response) {
-                        const count = response.data.count
-                        const select = response.data.select                    
+                    </div>
+            {% empty %}
+                <p class="text-secondary">아직 작성한 글이 없습니다! 첫 글을 작성해 보세요 :)</p>
+            {% endfor %}
+        </div>
+    </div>
+<script>
+    const formCheck = document.querySelector('.form-check').value
+    if (formCheck !== 'movie_detail'){
+        $(window).load(function () {
+        $('#commentEdit').modal({backdrop: 'static', keyboard: false})
+    });
+    }
+    const selectButtons = document.querySelectorAll('.select-button');
+    selectButtons.forEach(function (selectButton) {
+        selectButton.addEventListener('click', function (event) {
+            const moviePk = event.target.dataset.moviePk
+            const countInfo = document.querySelector(`#select-count-${moviePk}`)
+            axios.get(`/movies/${moviePk}/selected/`)
+                .then(function (response) {
+                    const count = response.data.count
+                    const select = response.data.select    
+                    const logout = response.data.logged_out
+                    if (!logout) {
                         if (select) {
-                            event.target.style.color = "#39CCCC"
+                        event.target.style.color = "#39CCCC"
                         } else {
                             event.target.style.color = "white"
                         }
                         countInfo.innerText = `${count}`
-                    });
-            });
+                    }             
+                });
         });
+    });
 
-        const watchButtons = document.querySelectorAll('.watch-button');
-        watchButtons.forEach(function (watchButton) {
-            watchButton.addEventListener('click', function (event) {
-                const moviePk = event.target.dataset.moviePk
-                const countInfo = document.querySelector(`#watch-count-${moviePk}`)
-                axios.get(`/movies/${moviePk}/watched/`)
-                    .then(function (response) {
-                        const count = response.data.count
-                        const watch = response.data.watch                    
+    const watchButtons = document.querySelectorAll('.watch-button');
+    watchButtons.forEach(function (watchButton) {
+        watchButton.addEventListener('click', function (event) {
+            const moviePk = event.target.dataset.moviePk
+            const countInfo = document.querySelector(`#watch-count-${moviePk}`)
+            axios.get(`/movies/${moviePk}/watched/`)
+                .then(function (response) {
+                    const count = response.data.count
+                    const watch = response.data.watch   
+                    const logout = response.data.logged_out
+                    if (!logout) {                
                         if (watch) {
                             event.target.style.color = "#39CCCC"
                         } else {
                             event.target.style.color = "white"
                         }
                         countInfo.innerText = `${count}`
-                    });
-            });
+                    }
+                });
         });
-        
-
- </script>
+    });
+</script>
 </div>
 {% endblock %}

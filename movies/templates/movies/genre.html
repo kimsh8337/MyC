@@ -20,8 +20,6 @@
                 <div class="col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3 card-deck movie-all" id="movie-{{ movie.id }}">
                     <div class="card border-0 m-3 text-center img-hover-zoom movie-link" style="width: 18rem;"
                         onclick="goDetail(event, `{% url 'movies:movie_detail' movie.pk %}`)">
-                        <!-- onclick="goDetail(event, this)"> -->
-                        <!-- onclick="location.href=`{% url 'movies:movie_detail' movie.pk %}`"> -->
                         {% if movie.poster_path %}
                         <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" 
                             class="mw-100 poster-img" alt="Movie Poster">
@@ -50,12 +48,9 @@
         </div>
     </div>
     <script>
-
         function goDetail(event, url) {
-            console.log('div')
             window.location.href = url;
         }
-
         const selectButtons = document.querySelectorAll('.select-button');
         selectButtons.forEach(function(selectButton){
             selectButton.addEventListener('click', function(event){
