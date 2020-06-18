@@ -14,7 +14,7 @@ from .forms import CustomUserCreationForm, CustomAuthenticationForm
 # Create your views here.
 def login(request):
     if request.user.is_authenticated:
-        messages.warning(request, '이미 로그인이 되어있습니다.')
+        messages.error(request, '이미 로그인이 되어있습니다.')
         return redirect('movies:index')
     if request.method == 'POST':
         form = CustomAuthenticationForm(request, request.POST)
@@ -31,7 +31,7 @@ def login(request):
 
 def signup(request):
     if request.user.is_authenticated:
-        messages.warning(request, '회원가입 하려면 로그아웃해햐 합니다.')
+        messages.error(request, '회원가입 하려면 로그아웃해햐 합니다.')
         return redirect('movies:index')
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
@@ -56,6 +56,21 @@ def logout(request):
     messages.success(request, '로그아웃되었습니다.')
     return redirect('movies:index')
 
+
+@require_POST
+@login_required
+def delete(request):
+    request.user.delete()
+    messages.success(request, 'Goodbye....')
+    return redirect('movies:index')
+
+def settings(request, user_id):
+    if request.user.id != user_id:
+        messages.error(request, '권한이 없습니다.')
+        return redirect('movies:index')
+    
+    return render(request, 'accounts/settings.html')
+
 def profile(request, user_id):
     User = get_user_model()
     user = get_object_or_404(User, pk=user_id)
@@ -74,35 +89,10 @@ def profile(request, user_id):
         }
     return render(request, 'accounts/profile.html', context)
 
-def saved(requset, user_id):
-    User = get_user_model()
-    user = get_object_or_404(User, pk=user_id)
-    saved = user.selcted_movies.all()
-    watched = user.watched_movies.all()
-    movie_titles = []
-    watched_list = []
-
-    for movie in saved:
-        movie_titles.append(movie.id)
-
-
-    context = {
-        'movie_titles': movie_titles,
-    }
-    
-    return JsonResponse(context)
-
-def watched(request, user_id):
-    User = get_user_model()
-    user = get_object_or_404(User, pk=user_id)
-    watched = user.watched_movies.all()
-
-    return JsonResponse(context)
-
 
 def follow(request, user_id):
     if not request.user.is_authenticated:
-        messages.warning(request, '로그인이 필요한 기능입니다.')
+        messages.error(request, '로그인이 필요한 기능입니다.')
         return redirect('accounts:profile', user_id)
     User = get_user_model()
     user = get_object_or_404(User, pk=user_id)

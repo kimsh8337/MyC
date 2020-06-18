@@ -1,0 +1,11 @@
+{% if watched_cnt < 50 %}
+    <i class="fas fa-baby"></i>
+{% elif watched_cnt < 100 %}
+    <i class="fas fa-child"></i>
+{% elif watched_cnt < 200 %}
+    <i class="fas fa-walking"></i>
+{% elif watched_cnt < 300 %}
+    <i class="fas fa-running"></i>
+{% else}
+    <i class="fas fa-crown mr-2"></i>
+{% endif %} 
