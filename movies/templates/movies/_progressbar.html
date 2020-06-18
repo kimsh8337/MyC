@@ -18,10 +18,18 @@
             role="progressbar" style="width: 100%" aria-valuenow="20" 
             aria-valuemin="0" aria-valuemax="100">아직 정보가 없습니다!</div>
     {% else %}
+<<<<<<< HEAD
     <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: {{ point_per.0|floatformat }}%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">영상미 {{ point_per.0|floatformat }}%</div>
     <div class="progress-bar progress-bar-striped bg-success progress-bar-animated" role="progressbar" style="width: {{ point_per.1|floatformat }}%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">배우연기 {{ point_per.1|floatformat }}%</div>
     <div class="progress-bar progress-bar-striped bg-info progress-bar-animated" role="progressbar" style="width: {{ point_per.2|floatformat }}%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">감독연출 {{ point_per.2|floatformat }}%</div>
     <div class="progress-bar progress-bar-striped bg-warning progress-bar-animated" role="progressbar" style="width: {{ point_per.3|floatformat }}%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">스토리 {{ point_per.3|floatformat }}%</div>
     <div class="progress-bar progress-bar-striped bg-danger progress-bar-animated" role="progressbar" style="width: {{ point_per.4|floatformat }}%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">OST {{ point_per.4|floatformat }}%</div>
+=======
+    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: {{ point_per.0 }}%" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100">영상미 {{ point_per.0|floatformat }}%</div>
+    <div class="progress-bar progress-bar-striped bg-success progress-bar-animated" role="progressbar" style="width: {{ point_per.1 }}%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">배우연기 {{ point_per.1|floatformat }}%</div>
+    <div class="progress-bar progress-bar-striped bg-info progress-bar-animated" role="progressbar" style="width: {{ point_per.2 }}%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">감독연출 {{ point_per.2|floatformat }}%</div>
+    <div class="progress-bar progress-bar-striped bg-warning progress-bar-animated" role="progressbar" style="width: {{ point_per.3 }}%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">스토리 {{ point_per.3|floatformat }}%</div>
+    <div class="progress-bar progress-bar-striped bg-danger progress-bar-animated" role="progressbar" style="width: {{ point_per.4 }}%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">OST {{ point_per.4|floatformat }}%</div>
+>>>>>>> 1672af082452a19a97b5082ea56b186358d9517a
     {% endif %}
 </div>

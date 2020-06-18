@@ -14,13 +14,13 @@ from .forms import CustomUserCreationForm, CustomAuthenticationForm
 # Create your views here.
 def login(request):
     if request.user.is_authenticated:
-        messages.warning(request, '이미 로그인이 되어있음.')
+        messages.warning(request, '이미 로그인이 되어있습니다.')
         return redirect('movies:index')
     if request.method == 'POST':
         form = CustomAuthenticationForm(request, request.POST)
         if form.is_valid():
             auth_login(request, form.get_user())
-            messages.success(request, f'{request.user.username}님 환영!')
+            messages.success(request, f'{request.user.username}님 환영합니다!')
             return redirect(request.GET.get('next') or 'movies:index')
     else:
         form = CustomAuthenticationForm()
@@ -31,7 +31,7 @@ def login(request):
 
 def signup(request):
     if request.user.is_authenticated:
-        messages.warning(request, '이미 로그인이 되어있음. 회원가입 하려면 로그아웃해햐 합니다.')
+        messages.warning(request, '회원가입 하려면 로그아웃해햐 합니다.')
         return redirect('movies:index')
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
@@ -41,7 +41,7 @@ def signup(request):
             password = form.cleaned_data['password1']
             user = authenticate(username=username, password=password)
             auth_login(request, user)
-            # messages.success(request, '회원가입이 완료되었습니다. 로그인이 가능합니다.')
+            messages.success(request, '회원가입이 완료되었습니다. 환영합니다:')
             return redirect('movies:index')
     else:
         form = CustomUserCreationForm()
@@ -53,7 +53,7 @@ def signup(request):
 @login_required
 def logout(request):
     auth_logout(request)
-    messages.success(request, '로그아웃!')
+    messages.success(request, '로그아웃되었습니다.')
     return redirect('movies:index')
 
 def profile(request, user_id):
@@ -102,7 +102,7 @@ def watched(request, user_id):
 
 def follow(request, user_id):
     if not request.user.is_authenticated:
-        messages.warning(request, '로그인해야함!')
+        messages.warning(request, '로그인이 필요한 기능입니다.')
         return redirect('accounts:profile', user_id)
     User = get_user_model()
     user = get_object_or_404(User, pk=user_id)

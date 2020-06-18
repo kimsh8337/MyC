@@ -2,7 +2,6 @@ body {
     background-color:rgb(31, 31, 31) !important;
     color: white !important;
     margin-top: 0 !important;
-    /* font-family: 'Noto Sans KR', sans-serif !important; */
     font-family: 'Do Hyeon', sans-serif !important;
 }
 .messages {
@@ -21,11 +20,9 @@ body {
 }
 .container-cover {
     position: relative;
-    /* text-align: center; */
 }
 .inner {
     z-index: 1000;
-    /* float: center; */
     position: absolute;
     top: 50%;
     left: 50%
@@ -38,7 +35,6 @@ body {
     background-size: cover;
     position: relative;
     background-position: center top;
-    /* opacity: 0.3; */
     top: 0 !important;
     display: flex;
     justify-content: center;

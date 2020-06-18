@@ -1,18 +1,20 @@
 {% if messages %}
-    <div class="messages">
+    <span style="display: none; float: left;">
         {% for message in messages %}
-            <div class="alert alert-{% if message.tags %}{{ message.tags }}{% endif %} alert-dismissible fade show" 
-                role="alert" id="{{ message }}">{{ message }}
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-            </div>
+            <span class="msg" id="{{ message.tags }}-{{ message }}" style="display: none;"></span>
         {% endfor %}
-    </div>
+    </span>
 {% endif %}
 
 <script>
-    // const messageFramework = 
-    // if( )
-    // alert('{{ message }}');
+    const msg = document.querySelector('.msg')
+    if (msg){
+        const str = msg.id
+        const words = str.split('-')
+
+        if (words[0] == 'warning') {
+            words[0] == 'warn'
+        }
+        $.notify(words[1], words[0])
+    }
 </script>

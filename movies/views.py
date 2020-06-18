@@ -84,13 +84,17 @@ def index(request):
                         year_dict[year] += 1 
                 year_sorted = sorted(year_dict.items(), key=lambda x: x[1], reverse=True)
                 for i in range(3):
-                    movie_rec = Movie.objects.filter(release_date__startswith=year_sorted[i][0]).order_by('?')[0]
-                    if movie_rec in saved_unseen or movie_rec in user_watched:
-                        continue
-                    if movie_rec in user_liked or movie_rec in user_hated:
-                        continue
-                    final_rec.append(movie_rec)
-                    cnt += 1
+                    try:
+                        movie_rec = Movie.objects.filter(release_date__startswith=year_sorted[i][0]).order_by('?')[0]
+                        if movie_rec in saved_unseen or movie_rec in user_watched:
+                            continue
+                        if movie_rec in user_liked or movie_rec in user_hated:
+                            continue
+                        final_rec.append(movie_rec)
+                        cnt += 1
+                    except:
+                        break
+                    
                 # 사용자가 본 영화 기준 언어 추천
                 for movie in watched_movies:
                     lang = movie.original_language
@@ -121,20 +125,23 @@ def index(request):
                         else:
                             genre_dict[genre.name] += 1
                     genre_sorted = sorted(genre_dict.items(), key=lambda x: x[1], reverse=True)
-                for i in range(4):
-                    genre_rec = Genre.objects.get(name=genre_sorted[i][0])
-                    movie_rec = genre_rec.movie_genres.all().order_by('?')[0]
-                    if movie_rec in saved_unseen or movie_rec in user_watched:
-                        continue
-                    if movie_rec in user_liked or movie_rec in user_hated:
-                        continue
-                    final_rec.append(movie_rec)
-                    cnt += 1
+                for i in range(4):  
+                    try: 
+                        genre_rec = Genre.objects.get(name=genre_sorted[i][0])
+                        movie_rec = genre_rec.movie_genres.all().order_by('?')[0]
+                        if movie_rec in saved_unseen or movie_rec in user_watched:
+                            continue
+                        if movie_rec in user_liked or movie_rec in user_hated:
+                            continue
+                        final_rec.append(movie_rec)
+                        cnt += 1
+                    except:
+                        break
     context = {
         'movie_top': movies[0],
         'movies_top3': movies[1:4],
         'saved_top_a' : saved_unseen[:5],
-        'saved_top_b' : saved_unseen[6:],
+        'saved_top_b' : saved_unseen[5:10],
         'saved_cnt': saved_cnt,
         'final_rec': final_rec[:10],
         'final_top_a': final_rec[:5],
@@ -207,7 +214,7 @@ def movie_detail(request, movie_pk):
     print(movie_rank)
     for j in range(5):
         if movie_point[j] != 0:
-            point_per[j] = round(movie_point[j] / sum(movie_point) * 100)
+            point_per[j] = movie_point[j] / sum(movie_point) * 100
 
     print(rank_per)
     print(point_per)
@@ -238,7 +245,8 @@ def rating_create(request, movie_pk):
             messages.success(request, '의견이 잘 반영되었습니다.')
             return redirect('movies:movie_detail', movie_pk)
     else:
-        messages.warning(request, 'Rating 작성을 위해서는 로그인이 필요합니다.')
+        messages.info(request, 'Rating 작성을 위해서는 로그인이 필요합니다.')
+
         return redirect('accounts:login')
 
 @login_required
@@ -273,32 +281,53 @@ def rating_delete(request, movie_pk, rating_pk):
     rating = get_object_or_404(Rating, pk=rating_pk)
     if request.user == rating.user:
         rating.delete()
+        messages.success(request, '의견이 삭제되었습니다.')
     return redirect('movies:movie_detail', movie_pk)
 
 def movie_select(request, movie_pk):
     movie = get_object_or_404(Movie, pk=movie_pk)
-    if movie.selected_users.filter(id=request.user.pk).exists():
-        movie.selected_users.remove(request.user)
-        select = False
-    else:
-        movie.selected_users.add(request.user)
-        select = True
+
+    s_count = 0
+    select = False
+    logged_out = True
+    if request.user.is_authenticated:
+        logged_out = False
+        if movie.selected_users.filter(id=request.user.pk).exists():
+            movie.selected_users.remove(request.user)
+            select = False
+        else:
+            movie.selected_users.add(request.user)
+            select = True
+        s_count = request.user.selcted_movies.count()
+
     context = {
         'select': select,
-        'count': movie.selected_users.count()
+        'user_saved_count': s_count,
+        'count': movie.selected_users.count(),
+        'logged_out': logged_out,
     }
     return JsonResponse(context)
 
 def movie_watch(request, movie_pk):
     movie = get_object_or_404(Movie, pk=movie_pk)
-    if movie.watched_users.filter(id=request.user.pk).exists():
-        movie.watched_users.remove(request.user)
-        watch = False
-    else:
-        movie.watched_users.add(request.user)
-        watch = True
+
+    w_count = 0
+    watch = False
+    logged_out = True
+    if request.user.is_authenticated:
+        logged_out = False
+        if movie.watched_users.filter(id=request.user.pk).exists():
+            movie.watched_users.remove(request.user)
+            watch = False
+        else:
+            movie.watched_users.add(request.user)
+            watch = True
+        w_count = request.user.watched_movies.count()
+
     context = {
         'watch': watch,
-        'count': movie.watched_users.count()
+        'user_watched_count': w_count,
+        'count': movie.watched_users.count(),
+        'logged_out': logged_out,
     }
     return JsonResponse(context)
