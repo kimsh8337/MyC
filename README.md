@@ -54,7 +54,7 @@ Python Web Framework
 3. My Page에서 저장한 영화 확인 및 관리
 
    - 내가 저장한 영화 확인 및 관리
-  =======
+    =======
 
    - 내가 저장한 영화 확인 및 수정 가능
 
@@ -84,7 +84,7 @@ Python Web Framework
 
 ###  데이터베이스 모델링(ERD)
 
-
+![erd](README.assets/erd.jpg)
 
 ###  필수 기능
 
