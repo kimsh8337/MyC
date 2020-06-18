@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_POST
 from django.contrib import messages
+from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.http import JsonResponse
@@ -8,7 +9,6 @@ from django.http import JsonResponse
 from .models import Movie, Rating, Genre
 from .forms import RatingForm
 
-# movies = Movie.objects.all()
 # Create your views here.
 def index(request):
     movies = Movie.objects.order_by('-popularity')
@@ -20,33 +20,21 @@ def index(request):
     ratings = []
     final_rec = []
 
+    # 추천 알고리즘
     if request.user.is_authenticated:
         # 사용자가 찜한 영화
         selected_movies = request.user.selcted_movies.all()
         for movie in selected_movies:
             user_selected.append(movie)
-        
         # 사용자가 본 영화
         watched_movies = request.user.watched_movies.all()
         for movie in watched_movies:
             user_watched.append(movie)
-        if len(selected_movies) or len(watched_movies):
+        if len(user_selected) or len(user_watched):
             # 1. 찜했는데 안본영화 나열
             for movie in selected_movies:
                 if movie not in watched_movies:
                     saved_unseen.append(movie)
-
-            # user_genres = {}
-            # user_point = {}
-            # for movie in selected_movies:
-            #     ratings = movie.rating_set.all()
-            #     if ratings:
-            #         for rating in ratings:
-            #             tmp = rating.standard
-            #             if tmp not in user_point:
-            #                 user_point[tmp] = 1
-            #             else:
-            #                 user_point[tmp] += 1
                 
             if len(saved_unseen) > 10:
                 saved_cnt = 10
@@ -137,6 +125,7 @@ def index(request):
                         cnt += 1
                     except:
                         break
+
     context = {
         'movie_top': movies[0],
         'movies_top3': movies[1:4],
@@ -211,14 +200,11 @@ def movie_detail(request, movie_pk):
     for i in range(2):
         if movie_rank[i] != 0:
             rank_per[i] = movie_rank[i] / sum(movie_rank) * 100
-    print(movie_rank)
+
     for j in range(5):
         if movie_point[j] != 0:
             point_per[j] = movie_point[j] / sum(movie_point) * 100
-
-    print(rank_per)
-    print(point_per)
-
+    
     form = RatingForm()
     context = {
         'movie': movie,
@@ -228,7 +214,6 @@ def movie_detail(request, movie_pk):
         'sum_rank': sum(movie_rank),
         'point_per': point_per,
         'sum_point': sum(movie_point),
-        'top_point': point_per.index(max(point_per))
     }
     return render(request, 'movies/movie_detail.html', context)
 
@@ -256,7 +241,7 @@ def rating_update(request, movie_pk, rating_pk):
     ratings = movie.rating_set.order_by('-pk')
 
     if request.user != rating.user:
-        messages.warning(request, '본인만 수정이 가능합니다.')
+        messages.error(request, '본인만 수정이 가능합니다.')
         return redirect('movies:movie_detail', movie_pk)
     
     if request.method =='POST':
@@ -323,6 +308,21 @@ def movie_watch(request, movie_pk):
             movie.watched_users.add(request.user)
             watch = True
         w_count = request.user.watched_movies.count()
+        # level change
+        User = get_user_model()
+        user = get_object_or_404(User, pk=request.user.id)
+        if w_count >= 50:
+            user.level = 2
+            user.save()
+        elif w_count >= 100:
+            user.level = 3
+            user.save()
+        elif w_count >= 200:
+            user.level = 4
+            user.save()
+        elif w_count >= 300:
+            user.level = 5
+            user.save()
 
     context = {
         'watch': watch,

@@ -1,0 +1,11 @@
+{% if rating.user.watched_movies.all.count < 50 %}
+    <i class="fas fa-baby"></i>
+{% elif rating.user.watched_movies.all.count < 100 %}
+    <i class="fas fa-child"></i>
+{% elif rating.user.watched_movies.all.count < 200 %}
+    <i class="fas fa-walking"></i>
+{% elif rating.user.watched_movies.all.count < 300 %}
+    <i class="fas fa-running"></i>
+{% else %}
+    <i class="fas fa-crown mr-2"></i>
+{% endif %}
